@@ -30,6 +30,10 @@ const router = createBrowserRouter([
     path: '/doctor',
     element: <DoctorHome />,
   },
+    {
+    path: '/patient',
+    element: <App />,
+  },
 ]);
 
 createRoot(document.getElementById('root')).render(
