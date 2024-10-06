@@ -13,7 +13,7 @@ function Login() {
   const onSubmit = async (data) => {
     setIsLoading(true); // Start loading
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/signin', {
+      const response = await axios.post('https://aarogya-bharat-backend.vercel.app/api/auth/signin', {
         email: data.email,
         password: data.password,
       });
