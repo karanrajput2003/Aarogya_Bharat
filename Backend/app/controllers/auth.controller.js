@@ -3,6 +3,7 @@ const db = require("../models");
 const asyncHandler = require('express-async-handler')
 const User = db.user;
 const Role = db.role;
+const dbConfig = require("../config/db.config.js");
 
 
 var jwt = require("jsonwebtoken");
@@ -102,7 +103,7 @@ exports.signin = (req, res) => {
       }
 
       const token = jwt.sign({ id: user.id },
-                              process.env.JWT_SECRET_KEY,
+                              dbConfig.JWT_SECRET_KEY,
                               {
                                 algorithm: 'HS256',
                                 allowInsecureKeySizes: true,
@@ -147,7 +148,7 @@ exports.logout = (req, res) => {
       return res.status(403).send({ message: "No token provided!" });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+  jwt.verify(token, dbConfig.JWT_SECRET_KEY, (err, decoded) => {
       if (err) {
           return res.status(401).send({
               message: "Unauthorized!",
