@@ -54,7 +54,7 @@ function Register() {
                     type="text"
                     id="fullName"
                     placeholder="Enter your full name"
-                    className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
+                    className={`mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
                       errors.fullName ? 'border-red-500' : ''
                     }`}
                     {...register('fullName', { required: 'Full Name is required' })}
@@ -70,7 +70,7 @@ function Register() {
                     type="text"
                     id="email"
                     placeholder="Enter your email"
-                    className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
+                    className={`mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
                       errors.email ? 'border-red-500' : ''
                     }`}
                     {...register('email', { required: 'Email is required' })}
@@ -89,7 +89,7 @@ function Register() {
                     type="number"
                     id="age"
                     placeholder="Enter your age"
-                    className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
+                    className={`mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
                       errors.age ? 'border-red-500' : ''
                     }`}
                     {...register('age', { required: 'Age is required', min: { value: 18, message: 'You must be at least 18 years old' } })}
@@ -105,7 +105,7 @@ function Register() {
                     type="text"
                     id="aadhar"
                     placeholder="Enter your Aadhar number"
-                    className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
+                    className={`mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
                       errors.aadhar ? 'border-red-500' : ''
                     }`}
                     {...register('aadhar', { required: 'Aadhar number is required', minLength: { value: 12, message: 'Aadhar must be 12 digits' }, maxLength: { value: 12, message: 'Aadhar must be 12 digits' } })}
@@ -123,7 +123,7 @@ function Register() {
                   type="text"
                   id="address"
                   placeholder="Enter your address"
-                  className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
+                  className={`mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
                     errors.address ? 'border-red-500' : ''
                   }`}
                   {...register('address', { required: 'Address is required' })}
@@ -141,7 +141,7 @@ function Register() {
                     type="password"
                     id="password"
                     placeholder="Enter your password"
-                    className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
+                    className={`mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
                       errors.password ? 'border-red-500' : ''
                     }`}
                     {...register('password', { required: 'Password is required', minLength: { value: 6, message: 'Password must be at least 6 characters long' } })}
@@ -157,7 +157,7 @@ function Register() {
                     type="password"
                     id="confirmPassword"
                     placeholder="Confirm your password"
-                    className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
+                    className={`mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
                       errors.confirmPassword ? 'border-red-500' : ''
                     }`}
                     {...register('confirmPassword', {

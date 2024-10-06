@@ -1,8 +1,8 @@
 import React from 'react'
-import Navbar from '../../Components/Home/Navbar'
-import MainPage from '../../Components/Home/MainPage'
-import Benefits from '../../Components/Home/Benefits'
-import CustomerFeedback from '../../Components/Home/CustomerFeedback'
+import Navbar from '../../Components/Doctor/Navbar'
+import MainPage from '../../Components/Doctor/MainPage'
+import Benefits from '../../Components/Doctor/Benefits'
+import DoctorFeedback from '../../Components/Doctor/DoctorFeedback'
 import Contact from '../../Components/Home/Contact'
 import Footer from '../../Components/Home/Footer'
 import Services from '../../Components/Home/Services'
@@ -15,7 +15,7 @@ function Home() {
         <MainPage />
         <Services />
         <Benefits />
-        <CustomerFeedback />
+        <DoctorFeedback />
         <Contact />
         <Footer />
       </main>

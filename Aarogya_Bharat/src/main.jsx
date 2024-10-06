@@ -8,6 +8,7 @@ import Login from './Pages/Home/Login.jsx'
 import Register from './Pages/Home/Register.jsx'
 import Doctorlogin from './Pages/Doctor/Login.jsx'
 import DoctorHome from './Pages/Doctor/Home.jsx'
+import PatientHome from './Pages/Patient/PatientHome.jsx'
 
 const router = createBrowserRouter([
   {
@@ -32,7 +33,7 @@ const router = createBrowserRouter([
   },
     {
     path: '/patient',
-    element: <App />,
+    element: <PatientHome />,
   },
 ]);
 
