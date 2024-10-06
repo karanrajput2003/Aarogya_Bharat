@@ -14,7 +14,7 @@ function Register() {
     setIsLoading(true);
     console.log(data)
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/signup', {
+      const response = await axios.post('https://aarogya-bharat-backend.vercel.app/api/auth/signup', {
         username: data.fullName,
         email: data.email,
         age: data.age,
