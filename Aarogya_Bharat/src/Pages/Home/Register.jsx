@@ -14,7 +14,6 @@ function Register() {
 
   const onSubmit = async (data) => {
     setIsLoading(true);
-    console.log(data)
     try {
       const response = await axios.post('https://aarogya-bharat-backend.vercel.app/api/auth/signup', {
         username: data.fullName,
@@ -25,17 +24,22 @@ function Register() {
         roles: ["user"],
         password: data.password,
       });
-      console.log(response);
-      toast.success("Patient Register Successfully", {
+      toast.success("Patient Registered Successfully!", {
         position: "top-right"
       });  
-      navigate("/login");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000); // Delay navigation for user experience
     } catch (error) {
-      console.error(error);
-      toast.error("Username or Email already exists", {
-        position: "top-right"
-      });  
-      // setErrorMessage("Username or Email already exists");
+      if (error.response && error.response.status === 409) {
+        toast.error("Username or Email already exists", {
+          position: "top-right"
+        });
+      } else {
+        toast.error("Registration failed. Please try again.", {
+          position: "top-right"
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -46,18 +50,7 @@ function Register() {
   return (
     <>
       <Navbar />
-      <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-              />
+      <ToastContainer />
       <section className="w-full h-screen flex items-center justify-center bg-gradient-to-b from-[#073243] via-[#0a4c59] to-[#0d6270]">
         <div className="container md:px-8 lg:px-16 flex justify-center items-center">
           <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
@@ -73,9 +66,7 @@ function Register() {
                     type="text"
                     id="fullName"
                     placeholder="Enter your full name"
-                    className={`mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
-                      errors.fullName ? 'border-red-500' : ''
-                    }`}
+                    className={`mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${errors.fullName ? 'border-red-500' : ''}`}
                     {...register('fullName', { required: 'Full Name is required' })}
                   />
                   {errors.fullName && <p className="text-red-500 text-sm mt-1">{errors.fullName.message}</p>}
@@ -89,9 +80,7 @@ function Register() {
                     type="text"
                     id="email"
                     placeholder="Enter your email"
-                    className={`mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
-                      errors.email ? 'border-red-500' : ''
-                    }`}
+                    className={`mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${errors.email ? 'border-red-500' : ''}`}
                     {...register('email', { required: 'Email is required' })}
                   />
                   {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
@@ -108,9 +97,7 @@ function Register() {
                     type="number"
                     id="age"
                     placeholder="Enter your age"
-                    className={`mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
-                      errors.age ? 'border-red-500' : ''
-                    }`}
+                    className={`mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${errors.age ? 'border-red-500' : ''}`}
                     {...register('age', { required: 'Age is required', min: { value: 18, message: 'You must be at least 18 years old' } })}
                   />
                   {errors.age && <p className="text-red-500 text-sm mt-1">{errors.age.message}</p>}
@@ -124,9 +111,7 @@ function Register() {
                     type="text"
                     id="aadhar"
                     placeholder="Enter your Aadhar number"
-                    className={`mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
-                      errors.aadhar ? 'border-red-500' : ''
-                    }`}
+                    className={`mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${errors.aadhar ? 'border-red-500' : ''}`}
                     {...register('aadhar', { required: 'Aadhar number is required', minLength: { value: 12, message: 'Aadhar must be 12 digits' }, maxLength: { value: 12, message: 'Aadhar must be 12 digits' } })}
                   />
                   {errors.aadhar && <p className="text-red-500 text-sm mt-1">{errors.aadhar.message}</p>}
@@ -142,9 +127,7 @@ function Register() {
                   type="text"
                   id="address"
                   placeholder="Enter your address"
-                  className={`mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
-                    errors.address ? 'border-red-500' : ''
-                  }`}
+                  className={`mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${errors.address ? 'border-red-500' : ''}`}
                   {...register('address', { required: 'Address is required' })}
                 />
                 {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>}
@@ -160,9 +143,7 @@ function Register() {
                     type="password"
                     id="password"
                     placeholder="Enter your password"
-                    className={`mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
-                      errors.password ? 'border-red-500' : ''
-                    }`}
+                    className={`mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${errors.password ? 'border-red-500' : ''}`}
                     {...register('password', { required: 'Password is required', minLength: { value: 6, message: 'Password must be at least 6 characters long' } })}
                   />
                   {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
@@ -176,9 +157,7 @@ function Register() {
                     type="password"
                     id="confirmPassword"
                     placeholder="Confirm your password"
-                    className={`mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
-                      errors.confirmPassword ? 'border-red-500' : ''
-                    }`}
+                    className={`mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${errors.confirmPassword ? 'border-red-500' : ''}`}
                     {...register('confirmPassword', {
                       required: 'Please confirm your password',
                       validate: value => value === password || 'Passwords do not match'
@@ -194,7 +173,8 @@ function Register() {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full h-10 bg-[#095d7e] text-white font-medium rounded-md transition-colors duration-200 hover:bg-[#0a7580]"
+                className="w-full h-10 bg-[#095d7e] text-white font-medium rounded-md transition-colors duration-200 hover:bg-[#0a7580] disabled:bg-gray-400"
+                disabled={isLoading}
               >
                 {isLoading ? 'Registering...' : 'Register'}
               </button>

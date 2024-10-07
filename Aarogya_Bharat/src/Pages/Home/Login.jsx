@@ -19,7 +19,7 @@ function Login() {
         email: data.email,
         password: data.password,
       });
-      
+
       console.log(response.data.email);
       console.log(response.data.roles[0]);
 
@@ -28,20 +28,23 @@ function Login() {
         toast.success("Login Successfully", {
           position: "top-right"
         });
-        navigate("/patient");
+        setTimeout(() => {
+          navigate("/patient");
+        }, 1000); // Delay navigation for user experience
           
       } else if (response.data.roles[0] === "ROLE_MODERATOR") {
-        navigate("/doctor");
         toast.success("Login Successfully", {
           position: "top-right"
         });
+        setTimeout(() => {
+          navigate("/doctor");
+        }, 1000); // Delay navigation for user experience
       }
     } catch (error) {
       console.error(error);
       toast.error("Incorrect Username or Password", {
         position: "top-right"
       });  
-      // setErrorMessage("Incorrect Username or Password");
     } finally {
       setIsLoading(false); // Stop loading
     }
@@ -51,17 +54,17 @@ function Login() {
     <>
       <Navbar />
       <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-              />
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <section className="w-full h-screen flex items-center justify-center bg-gradient-to-b from-[#073243] via-[#0a4c59] to-[#0d6270]">
         <div className="container flex justify-center items-center">
           <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
