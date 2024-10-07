@@ -77,6 +77,12 @@ function Navbar() {
           >
             Doctor Profile
           </Link>
+              <Link
+            to="/"
+            className="text-sm font-medium hover:underline underline-offset-4"
+          >
+            Logout
+          </Link>
         </nav>
 
         {/* Mobile Menu */}
@@ -104,6 +110,14 @@ function Navbar() {
                   className="text-sm font-medium hover:underline underline-offset-4"
                 >
                   Doctor Profile
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/"
+                  className="text-sm font-medium hover:underline underline-offset-4"
+                >
+                  Logout
                 </Link>
               </li>
             </ul>

@@ -25,15 +25,16 @@ function Login() {
 
       // Redirect based on role
       if (response.data.roles[0] === "ROLE_USER") {
-        navigate("/patient");
         toast.success("Login Successfully", {
           position: "top-right"
-        });  
+        });
+        navigate("/patient");
+          
       } else if (response.data.roles[0] === "ROLE_MODERATOR") {
         navigate("/doctor");
         toast.success("Login Successfully", {
           position: "top-right"
-        });  
+        });
       }
     } catch (error) {
       console.error(error);

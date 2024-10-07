@@ -63,12 +63,6 @@ function Navbar() {
             to="./"
             className="text-sm font-medium hover:underline underline-offset-4"
           >
-            About
-          </Link>
-          <Link
-            to="./"
-            className="text-sm font-medium hover:underline underline-offset-4"
-          >
             Contact
           </Link>
           <Link
@@ -76,6 +70,12 @@ function Navbar() {
             className="text-sm font-medium hover:underline underline-offset-4"
           >
             Profile
+          </Link>
+          <Link
+            to="/"
+            className="text-sm font-medium hover:underline underline-offset-4"
+          >
+            Logout
           </Link>
         </nav>
 
@@ -105,6 +105,14 @@ function Navbar() {
                 >
                   Profile
                 </Link>
+              </li>
+              <li>
+              <Link
+            to="/"
+            className="text-sm font-medium hover:underline underline-offset-4"
+          >
+            Logout
+          </Link>
               </li>
             </ul>
           </nav>
