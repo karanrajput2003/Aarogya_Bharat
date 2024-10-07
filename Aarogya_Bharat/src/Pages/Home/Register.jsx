@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import Navbar from '../../Components/Home/Navbar';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import axios from 'axios'; // Import axios
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Register() {
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
@@ -24,11 +26,16 @@ function Register() {
         password: data.password,
       });
       console.log(response);
-      alert("User Registered Successfully");
+      toast.success("Patient Register Successfully", {
+        position: "top-right"
+      });  
       navigate("/login");
     } catch (error) {
       console.error(error);
-      setErrorMessage("Username or Email already exists");
+      toast.error("Username or Email already exists", {
+        position: "top-right"
+      });  
+      // setErrorMessage("Username or Email already exists");
     } finally {
       setIsLoading(false);
     }
@@ -39,6 +46,18 @@ function Register() {
   return (
     <>
       <Navbar />
+      <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+              />
       <section className="w-full h-screen flex items-center justify-center bg-gradient-to-b from-[#073243] via-[#0a4c59] to-[#0d6270]">
         <div className="container md:px-8 lg:px-16 flex justify-center items-center">
           <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">

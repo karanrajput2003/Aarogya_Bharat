@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import HomeImg from '../../assets/Home/doctor.svg';
 
 function MainPage() {
+  
+
+  
   return (
     <section className="w-full pt-12 md:pt-24 lg:pt-32 bg-gradient-to-b from-[#073243] via-[#0a4c59] to-[#0d6270]">
       <div className="container space-y-10 xl:space-y-16">
@@ -20,14 +23,14 @@ function MainPage() {
                 to="/register"
                 className="inline-flex h-9 items-center justify-center rounded-md bg-indigo-900 px-4 py-2 text-black font-medium text-white shadow transition-colors hover:bg-indigo-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-700 disabled:pointer-events-none disabled:opacity-50"
               >
-                Sign Up Now  
+                Sign Up Now
               </Link>
-              {/* <Link
-                to="/"
+              {/* <button
+                onClick={notify}
                 className="inline-flex h-9 items-center justify-center rounded-md border border-input bg-white px-4 py-2 text-sm font-medium text-indigo-700 shadow-sm transition-colors hover:bg-indigo-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-700 disabled:pointer-events-none disabled:opacity-50"
               >
                 Learn More
-              </Link> */}
+              </button> */}
             </div>
           </div>
           <div className="flex flex-col items-start space-y-4">
@@ -39,11 +42,11 @@ function MainPage() {
           </div>
         </div>
       </div>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
 
     </section>
   );

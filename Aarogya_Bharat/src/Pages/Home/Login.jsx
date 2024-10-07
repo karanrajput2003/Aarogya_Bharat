@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import Navbar from '../../Components/Home/Navbar';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import axios from 'axios'; // Import axios
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Login() {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -24,12 +26,21 @@ function Login() {
       // Redirect based on role
       if (response.data.roles[0] === "ROLE_USER") {
         navigate("/patient");
+        toast.success("Login Successfully", {
+          position: "top-right"
+        });  
       } else if (response.data.roles[0] === "ROLE_MODERATOR") {
         navigate("/doctor");
+        toast.success("Login Successfully", {
+          position: "top-right"
+        });  
       }
     } catch (error) {
       console.error(error);
-      setErrorMessage("Incorrect Username or Password");
+      toast.error("Incorrect Username or Password", {
+        position: "top-right"
+      });  
+      // setErrorMessage("Incorrect Username or Password");
     } finally {
       setIsLoading(false); // Stop loading
     }
@@ -38,6 +49,18 @@ function Login() {
   return (
     <>
       <Navbar />
+      <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+              />
       <section className="w-full h-screen flex items-center justify-center bg-gradient-to-b from-[#073243] via-[#0a4c59] to-[#0d6270]">
         <div className="container flex justify-center items-center">
           <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
