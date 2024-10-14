@@ -54,23 +54,29 @@ function Navbar() {
         {/* Desktop Menu */}
         <nav className="hidden lg:flex gap-4 sm:gap-6 ml-auto">
           <Link
-            to="./"
+            to="/patient"
             className="text-sm font-medium hover:underline underline-offset-4"
           >
-            Services
+            Home
           </Link>
           <Link
-            to="./"
+            to="/patient/finddoctor"
             className="text-sm font-medium hover:underline underline-offset-4"
           >
-            Contact
+            Find a Doctor
           </Link>
           <Link
-            to="./profile"
+            to="/patient/myappointments"
             className="text-sm font-medium hover:underline underline-offset-4"
           >
-            Profile
+            My Appoiments
           </Link>
+          <Link
+                  to="/patient/profile"
+                  className="text-sm font-medium hover:underline underline-offset-4"
+                >
+                  Profile
+                </Link>
           <Link
             to="/"
             className="text-sm font-medium hover:underline underline-offset-4"
@@ -84,23 +90,23 @@ function Navbar() {
           <nav className="lg:hidden absolute top-14 left-0 w-full shadow-lg bg-[#073243]">
             <ul className="flex flex-col items-center gap-4 p-4">
               <li>
-                <Link to="./" className="text-sm font-medium hover:underline">
-                  Services
+                <Link to="/patient" className="text-sm font-medium hover:underline">
+                  Home
                 </Link>
               </li>
               <li>
-                <Link to="./" className="text-sm font-medium hover:underline">
-                  About
+                <Link to="/patient/finddoctor" className="text-sm font-medium hover:underline">
+                Find a Doctor
                 </Link>
               </li>
               <li>
-                <Link to="./" className="text-sm font-medium hover:underline">
-                  Contact
+                <Link to="/patient/myappointments" className="text-sm font-medium hover:underline">
+                My Appoiments
                 </Link>
               </li>
               <li>
                 <Link
-                  to="./profile"
+                  to="/patient/profile"
                   className="text-sm font-medium hover:underline underline-offset-4"
                 >
                   Profile

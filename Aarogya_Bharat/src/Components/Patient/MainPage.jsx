@@ -17,7 +17,7 @@ function MainPage() {
             </p>
             <div className="mt-6 space-x-4">
               <Link
-                to="/"
+                to="./finddoctor"
                 className="inline-flex h-9 items-center justify-center rounded-md bg-indigo-900 px-4 py-2 text-black font-medium text-white shadow transition-colors hover:bg-indigo-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-700 disabled:pointer-events-none disabled:opacity-50"
               >
                 Get Started

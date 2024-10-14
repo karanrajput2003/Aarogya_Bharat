@@ -1,5 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
+import virtual_consult from '../../assets/Home/virtual_consult.jpg'
+import online_pre from '../../assets/Home/online_pre.jpg'
+import Data_security from '../../assets/Home/Data_security.jpg'
 
 
 function Services() {
@@ -24,9 +27,9 @@ function Services() {
             >
               <Link to="/" className="block" prefetch={false}>
                   <img
-                    src="/placeholder.svg"
-                    width="300"
-                    height="200"
+                    src={virtual_consult}
+                    // width="300"
+                    // height="200"
                     alt="Virtual Consultations"
                     className="mx-auto aspect-video overflow-hidden rounded-xl object-cover group-hover:scale-105 transition-transform"
                   />
@@ -51,9 +54,9 @@ function Services() {
             >
               <Link to="/" className="block" prefetch={false}>
                   <img
-                    src="/placeholder.svg"
-                    width="300"
-                    height="200"
+                    src={online_pre}
+                    // width="300"
+                    // height="200"
                     alt="Online Prescription Management"
                     className="mx-auto aspect-video overflow-hidden rounded-xl object-cover group-hover:scale-105 transition-transform"
                   />
@@ -78,9 +81,9 @@ function Services() {
             >
               <Link to="/" className="block" prefetch={false}>
                   <img
-                    src="/placeholder.svg"
-                    width="300"
-                    height="200"
+                    src={Data_security}
+                    // width="300"
+                    // height="200"
                     alt="Secure Data Management"
                     className="mx-auto aspect-video overflow-hidden rounded-xl object-cover group-hover:scale-105 transition-transform"
                   />

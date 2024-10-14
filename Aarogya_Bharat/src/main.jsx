@@ -8,7 +8,13 @@ import Login from './Pages/Home/Login.jsx'
 import Register from './Pages/Home/Register.jsx'
 import Doctorlogin from './Pages/Doctor/Login.jsx'
 import DoctorHome from './Pages/Doctor/Home.jsx'
+
+// Patient
 import PatientHome from './Pages/Patient/PatientHome.jsx'
+import FindDoctor from './Pages/Patient/FindDoctor.jsx'
+import MyAppointments from './Pages/Patient/MyAppointments.jsx'
+import DoctorProfile from './Pages/Patient/DoctorProfile.jsx'
+import PatientProfile from './Pages/Patient/PatientProfile.jsx'
 
 const router = createBrowserRouter([
   {
@@ -34,6 +40,22 @@ const router = createBrowserRouter([
     {
     path: '/patient',
     element: <PatientHome />,
+  },
+  {
+    path: '/patient/finddoctor',
+    element: <FindDoctor />,
+  },
+  {
+    path: '/patient/myappointments',
+    element: <MyAppointments />,
+  },
+  {
+    path: '/patient/doctor/:id',
+    element: <DoctorProfile />,
+  },
+  {
+    path: '/patient/profile',
+    element: <PatientProfile />,
   },
 ]);
 
