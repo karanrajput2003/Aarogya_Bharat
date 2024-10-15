@@ -25,7 +25,7 @@ function PatientProfile() {
           <div className="bg-white rounded-lg shadow-md p-6 md:p-8 lg:p-10">
             <h2 className="text-xl font-semibold mb-4 border-b pb-2 text-black">Personal Information:</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
+              <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm  col-span-">
                 <FaUser className="text-2xl text-indigo-600 mr-3" />
                 <div>
                   <p className="text-gray-700 font-medium">Name:</p>
@@ -33,7 +33,7 @@ function PatientProfile() {
                 </div>
               </div>
 
-              <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
+              <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm  col-span-">
                 <p className="text-2xl text-indigo-600 mr-3">Age</p>
                 <div>
                   <p className="text-gray-700 font-medium">Age:</p>
@@ -41,7 +41,7 @@ function PatientProfile() {
                 </div>
               </div>
 
-              <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
+              <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm  col-span-">
                 <FaPhone className="text-2xl text-indigo-600 mr-3" />
                 <div>
                   <p className="text-gray-700 font-medium">Phone:</p>
@@ -49,7 +49,7 @@ function PatientProfile() {
                 </div>
               </div>
 
-              <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
+              <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm  col-span-">
                 <FaEnvelope className="text-2xl text-indigo-600 mr-3" />
                 <div>
                   <p className="text-gray-700 font-medium">Email:</p>
@@ -65,7 +65,7 @@ function PatientProfile() {
                 </div>
               </div>
 
-              <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
+              <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm  col-span-">
                 <p className="text-2xl text-indigo-600 mr-3">{patientData.gender}</p>
                 <div>
                   <p className="text-gray-700 font-medium">Gender:</p>

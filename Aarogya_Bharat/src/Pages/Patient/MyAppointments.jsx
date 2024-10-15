@@ -102,48 +102,30 @@ function MyAppointments() {
       <section className="min-h-screen py-12 md:py-16 lg:py-20 bg-gradient-to-b from-[#073243] via-[#0a4c59] to-[#0d6270]">
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
           <div className="mb-8 md:mb-10 lg:mb-12">
-            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl text-white"> {/* Text color */}
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white">
               {view === 'upcoming' ? 'Upcoming Telehealth Appointments' : view === 'completed' ? 'Completed Telehealth Appointments' : 'Unapproved Appointments'}
             </h2>
           </div>
 
           {/* Filters */}
-          <div className="flex gap-4 mb-8">
-            {/* <select
-              value={statusFilter}
-              onChange={e => setStatusFilter(e.target.value)}
-              className="px-4 py-2 rounded bg-[#F0F4F8] border border-[#7B6E58]"
-            >
-              <option value="">All Statuses</option>
-              <option value="Upcoming Teleconsultation">Upcoming Teleconsultation</option>
-              <option value="Completed (Telehealth)">Completed (Telehealth)</option>
-              <option value="Unapproved">Unapproved</option>
-            </select>
-
-            <button
-              onClick={handleFilter}
-              className="px-6 py-2 bg-[#189AB4] text-white rounded hover:bg-[#0a4c59]"
-            >
-              Apply Filters
-            </button> */}
-
+          <div className="flex gap-2 mb-8 flex-wrap">
             <button
               onClick={() => setView('upcoming')}
-              className={`px-6 py-2 rounded ${view === 'upcoming' ? 'bg-[#189AB4] text-white' : 'bg-[#F0F4F8] border-[#7B6E58] text-[#0d6270] border'}`} // Updated colors
+              className={`px-4 sm:px-6 py-2 rounded ${view === 'upcoming' ? 'bg-[#189AB4] text-white' : 'bg-[#F0F4F8] border-[#7B6E58] text-[#0d6270] border'}`}
             >
               Upcoming Appointments
             </button>
 
             <button
               onClick={() => setView('completed')}
-              className={`px-6 py-2 rounded ${view === 'completed' ? 'bg-[#189AB4] text-white' : 'bg-[#F0F4F8] border-[#7B6E58] text-[#0d6270] border'}`} // Updated colors
+              className={`px-4 sm:px-6 py-2 rounded ${view === 'completed' ? 'bg-[#189AB4] text-white' : 'bg-[#F0F4F8] border-[#7B6E58] text-[#0d6270] border'}`}
             >
               Completed Appointments
             </button>
 
             <button
               onClick={() => setView('unapproved')}
-              className={`px-6 py-2 rounded ${view === 'unapproved' ? 'bg-[#189AB4] text-white' : 'bg-[#F0F4F8] border-[#7B6E58] text-[#0d6270] border'}`} // Updated colors
+              className={`px-4 sm:px-6 py-2 rounded ${view === 'unapproved' ? 'bg-[#189AB4] text-white' : 'bg-[#F0F4F8] border-[#7B6E58] text-[#0d6270] border'}`}
             >
               Unapproved Appointments
             </button>
@@ -154,7 +136,7 @@ function MyAppointments() {
               displayedAppointments.map((appointment) => (
                 <div key={appointment._id} className="rounded-lg border bg-[#F0F4F8] text-[#05445E] shadow-sm">
                   <div className="p-4 md:p-6">
-                    <h3 className="text-lg font-semibold text-[#0d6270]">{appointment.doctor}</h3> {/* Updated text color */}
+                    <h3 className="text-lg font-semibold text-[#0d6270]">{appointment.doctor}</h3>
                     <p className="mt-2 text-[#189AB4]">{appointment.specialization}</p>
                     <p className="mt-1 text-[#189AB4]">
                       {new Date(appointment.date).toLocaleDateString()} at {new Date(appointment.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -165,14 +147,14 @@ function MyAppointments() {
                     {appointment.status.includes('Upcoming') && (
                       <button
                         onClick={() => handleViewDetails(appointment._id)}
-                        className="mt-4 px-4 py-2 bg-[#0a4c59] text-white rounded hover:bg-[#073243]"
+                        className="mt-4 w-full px-4 py-2 bg-[#0a4c59] text-white rounded hover:bg-[#073243]"
                       >
                         Start Telehealth Session
                       </button>
                     )}
                     <button
                       onClick={() => handleViewDetails(appointment._id)}
-                      className="mt-4 px-4 py-2 bg-[#189AB4] text-white rounded hover:bg-[#0a4c59]"
+                      className="mt-2 w-full px-4 py-2 bg-[#189AB4] text-white rounded hover:bg-[#0a4c59]"
                     >
                       View Details
                     </button>
@@ -181,7 +163,7 @@ function MyAppointments() {
               ))
             ) : (
               <p className="text-white">No appointments found.</p>
-            ) }
+            )}
           </div>
         </div>
       </section>
