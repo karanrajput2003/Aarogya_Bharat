@@ -4,95 +4,52 @@ const User = db.user;
 const Role = db.role;
 const dbConfig = require("../config/db.config.js");
 const qrcode = require("qrcode"); // Import the QR code library
-
+const fs = require("fs"); // File system module
+const path = require("path");
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 
-exports.signup = (req, res) => {
+exports.signup = async (req, res) => {
   const user = new User({
     username: req.body.username,
     email: req.body.email,
     age: req.body.age,
     aadhar_no: req.body.aadhar_no,
     Address: req.body.Address,
-    password: bcrypt.hashSync(req.body.password, 8)
+    password: bcrypt.hashSync(req.body.password, 8),
   });
 
-  user.save((err, savedUser) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
+  try {
+    // Save user to database first
+    const savedUser = await user.save();
 
-    // Generate the QR code after the user is saved
-    const qrCodeData = `https://aarogya-bharat-qr.vercel.app/id/${savedUser._id}`;
-    
-    qrcode.toDataURL(qrCodeData, { errorCorrectionLevel: 'H' }, (err, qrCodeBase64) => {
-      if (err) {
-        res.status(500).send({ message: "Error generating QR code" });
-        return;
-      }
+    // Generate the QR code
+    const qrCodeData = `https://aarogya-bharat-backend.vercel.app/patient/${savedUser._id}`; // URL to encode in QR code
+    const qrCodePath = path.join(__dirname, "public", "qrcodes", `${savedUser._id}.png`);
 
-      // Save the QR code base64 value to the user
-      savedUser.qrCodeBase64 = qrCodeBase64;
-      
-      // Update the user with the QR code
-      savedUser.save(err => {
-        if (err) {
-          res.status(500).send({ message: err });
-          return;
-        }
+    // Ensure the directory exists
+    fs.mkdirSync(path.dirname(qrCodePath), { recursive: true });
 
-        if (req.body.roles) {
-          Role.find(
-            { name: { $in: req.body.roles } },
-            (err, roles) => {
-              if (err) {
-                res.status(500).send({ message: err });
-                return;
-              }
+    // Generate and save the QR code image
+    await QRCode.toFile(qrCodePath, qrCodeData);
 
-              savedUser.roles = roles.map(role => role._id);
-              savedUser.save(err => {
-                if (err) {
-                  res.status(500).send({ message: err });
-                  return;
-                }
-                res.status(201).json({
-                  _id: savedUser._id,
-                  username: savedUser.username,
-                  email: savedUser.email,
-                  qrCodeBase64: savedUser.qrCodeBase64 // Return the QR code as well
-                });
-              });
-            }
-          );
-        } else {
-          Role.findOne({ name: "user" }, (err, role) => {
-            if (err) {
-              res.status(500).send({ message: err });
-              return;
-            }
+    // Update the user document with the path to the QR code image
+    savedUser.qrCodePath = `/qrcodes/${savedUser._id}.png`; // Relative path to serve the image
+    await savedUser.save();
 
-            savedUser.roles = [role._id];
-            savedUser.save(err => {
-              if (err) {
-                res.status(500).send({ message: err });
-                return;
-              }
-              res.status(201).json({
-                _id: savedUser._id,
-                username: savedUser.username,
-                email: savedUser.email,
-                qrCodeBase64: savedUser.qrCodeBase64 // Return the QR code as well
-              });
-            });
-          });
-        }
-      });
+    res.status(201).json({
+      _id: savedUser._id,
+      username: savedUser.username,
+      email: savedUser.email,
+      age: savedUser.age,
+      aadhar_no: savedUser.aadhar_no,
+      Address: savedUser.Address,
+      qrCodePath: savedUser.qrCodePath, // Return the QR code path
     });
-  });
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
 };
 
 exports.signin = (req, res) => {

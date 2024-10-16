@@ -12,7 +12,7 @@ function PatientProfile() {
   useEffect(() => {
     const fetchPatientData = async () => {
       try {
-        const response = await fetch(`https://aarogya-bharat-backend.vercel.app/patient/${patientId}`); // Adjust the URL as necessary
+        const response = await fetch(`http://localhost:8080/patient/${patientId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch patient data');
         }
@@ -26,7 +26,7 @@ function PatientProfile() {
     };
 
     fetchPatientData();
-  }, [patientId]); // Use patientId as a dependency
+  }, [patientId]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -52,7 +52,7 @@ function PatientProfile() {
                 <FaUser className="text-2xl text-indigo-600 mr-3" />
                 <div>
                   <p className="text-gray-700 font-medium">Name:</p>
-                  <p className="text-gray-900">{patientData.username}</p>
+                  <p className="text-gray-900">{patientData.name}</p>
                 </div>
               </div>
 
@@ -84,7 +84,7 @@ function PatientProfile() {
                 <FaMapMarkerAlt className="text-2xl text-indigo-600 mr-3" />
                 <div>
                   <p className="text-gray-700 font-medium">Address:</p>
-                  <p className="text-gray-900">{patientData.Address}</p>
+                  <p className="text-gray-900">{patientData.address}</p>
                 </div>
               </div>
 
@@ -96,22 +96,16 @@ function PatientProfile() {
                 </div>
               </div>
 
-              <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm col-span-2">
-                <p className="text-2xl text-indigo-600 mr-3">Aadhar No:</p>
-                <div>
-                  <p className="text-gray-700 font-medium">Aadhar No:</p>
-                  <p className="text-gray-900">{patientData.aadhar_no}</p>
+              {/* Display QR Code */}
+              {patientData.qrCodePath && (
+                <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm col-span-2">
+                  <img 
+                    src={`https://aarogya-bharat-backend.vercel.app/public${patientData.qrCodePath}`} 
+                    alt="QR Code" 
+                    className="w-24 h-24" 
+                  />
                 </div>
-              </div>
-
-              <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm col-span-2">
-                <p className="text-2xl text-indigo-600 mr-3">QR Code:</p>
-                <div>
-                  {patientData.qrCodeBase64 && (
-                    <img src={`data:image/png;base64,${patientData.qrCodeBase64}`} alt="QR Code" className="w-24 h-24" />
-                  )}
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
