@@ -11,7 +11,7 @@ function MainPage() {
     // Fetch user data from backend using userId
     const fetchUserData = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/users/${userId}`);
+        const response = await fetch(`https://aarogya-bharat-qr-backend.vercel.app/api/users/${userId}`);
         const data = await response.json();
         setUserData(data);
         setLoading(false);
