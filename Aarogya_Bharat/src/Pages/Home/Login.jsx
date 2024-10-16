@@ -11,11 +11,13 @@ import { login } from '../../redux/authSlice'; // Adjust path as necessary
 function Login() {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [errorMessage, setErrorMessage] = useState(''); // Error message state
   const navigate = useNavigate(); // Navigation
   const dispatch = useDispatch(); // Initialize dispatch
 
   const onSubmit = async (data) => {
     setIsLoading(true); // Start loading
+    setErrorMessage(''); // Reset any previous error messages
     try {
       const response = await axios.post('https://aarogya-bharat-backend.vercel.app/api/auth/signin', {
         email: data.email,
@@ -39,7 +41,6 @@ function Login() {
         setTimeout(() => {
           navigate("/patient");
         }, 1000); // Delay navigation for user experience
-          
       } else if (response.data.roles[0] === "ROLE_MODERATOR") {
         toast.success("Login Successfully", {
           position: "top-right"
@@ -50,6 +51,7 @@ function Login() {
       }
     } catch (error) {
       console.error(error);
+      setErrorMessage("Incorrect Username or Password"); // Set error message
       toast.error("Incorrect Username or Password", {
         position: "top-right"
       });  
@@ -86,9 +88,7 @@ function Login() {
                   type="email"
                   id="email"
                   placeholder="Enter your email"
-                  className={`mt-1 block w-full px-3 py-2 text-black border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
-                    errors.email ? 'border-red-500' : ''
-                  }`}
+                  className={`mt-1 block w-full px-3 py-2 text-black border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${errors.email ? 'border-red-500' : ''}`}
                   {...register('email', { required: 'Email is required' })}
                 />
                 {errors.email && (
@@ -104,9 +104,7 @@ function Login() {
                   type="password"
                   id="password"
                   placeholder="Enter your password"
-                  className={`mt-1 block w-full px-3 py-2 text-black border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${
-                    errors.password ? 'border-red-500' : ''
-                  }`}
+                  className={`mt-1 block w-full px-3 py-2 text-black border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-[#095d7e] transition duration-150 ${errors.password ? 'border-red-500' : ''}`}
                   {...register('password', { required: 'Password is required' })}
                 />
                 {errors.password && (
