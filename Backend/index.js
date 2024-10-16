@@ -91,12 +91,12 @@ function initial() {
 // 
 app.get('/patient/:id', async (req, res) => {
   try {
-    const patient = await User.findById(req.params.id);
-    if (!patient) {
-      return res.status(404).send({ message: 'Patient not found' });
+    const user = await User.findById(req.params.id).populate('roles'); // Populate roles if needed
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
     }
-    res.status(200).send(patient);
+    res.json(user);
   } catch (error) {
-    res.status(500).send({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 });

@@ -52,7 +52,7 @@ function PatientProfile() {
                 <FaUser className="text-2xl text-indigo-600 mr-3" />
                 <div>
                   <p className="text-gray-700 font-medium">Name:</p>
-                  <p className="text-gray-900">{patientData.name}</p>
+                  <p className="text-gray-900">{patientData.username}</p>
                 </div>
               </div>
 
@@ -84,7 +84,7 @@ function PatientProfile() {
                 <FaMapMarkerAlt className="text-2xl text-indigo-600 mr-3" />
                 <div>
                   <p className="text-gray-700 font-medium">Address:</p>
-                  <p className="text-gray-900">{patientData.address}</p>
+                  <p className="text-gray-900">{patientData.Address}</p>
                 </div>
               </div>
 
@@ -93,6 +93,23 @@ function PatientProfile() {
                 <div>
                   <p className="text-gray-700 font-medium">Gender:</p>
                   <p className="text-gray-900">{patientData.gender}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm col-span-2">
+                <p className="text-2xl text-indigo-600 mr-3">Aadhar No:</p>
+                <div>
+                  <p className="text-gray-700 font-medium">Aadhar No:</p>
+                  <p className="text-gray-900">{patientData.aadhar_no}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm col-span-2">
+                <p className="text-2xl text-indigo-600 mr-3">QR Code:</p>
+                <div>
+                  {patientData.qrCodeBase64 && (
+                    <img src={`data:image/png;base64,${patientData.qrCodeBase64}`} alt="QR Code" className="w-24 h-24" />
+                  )}
                 </div>
               </div>
             </div>
