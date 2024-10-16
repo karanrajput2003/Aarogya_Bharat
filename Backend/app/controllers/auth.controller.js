@@ -3,9 +3,6 @@ const db = require("../models");
 const User = db.user;
 const Role = db.role;
 const dbConfig = require("../config/db.config.js");
-const QRCode = require('qrcode');
-const fs = require("fs");
-const path = require("path");
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
@@ -26,32 +23,53 @@ exports.signup = (req, res) => {
       return;
     }
 
-    const qrCodeData = `https://aarogya-bharat-qr.vercel.app/id/${user._id}`; // Generate the URL for the QR code
+    if (req.body.roles) {
+      Role.find(
+        {
+          name: { $in: req.body.roles }
+        },
+        (err, roles) => {
+          if (err) {
+            res.status(500).send({ message: err });
+            return;
+          }
 
-    // Create a QR code image
-    QRCode.toFile(path.join(__dirname, 'public', 'qrcodes', `${user._id}.png`), qrCodeData, (err) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).send({ message: 'Failed to generate QR code' });
-      }
-
-      // Save the QR code path to the user document
-      user.qrCodePath = `/public/qrcodes/${user._id}.png`; // Adjust the path as necessary
-
-      // Save the user with the QR code path
-      user.save(err => {
+          user.roles = roles.map(role => role._id);
+          user.save(err => {
+            if (err) {
+              res.status(500).send({ message: err });
+              return;
+            }
+            res.status(201).json({
+              _id: user._id,
+              username: user.username,
+              email: user.email,
+            })
+          });
+        }
+      );
+    } else {
+      Role.findOne({ name: "user" }, (err, role) => {
         if (err) {
           res.status(500).send({ message: err });
           return;
         }
-        res.status(201).json({
-          _id: user._id,
-          username: user.username,
-          email: user.email,
-          qrCodePath: user.qrCodePath // Include the QR code path in the response
+
+        user.roles = [role._id];
+        user.save(err => {
+          if (err) {
+            res.status(500).send({ message: err });
+            return;
+          }
+          res.status(201).json({
+            _id: user._id,
+            username: user.username,
+            email: user.email,
+          })
+          // res.send({ message: "User was registered successfully!" });
         });
       });
-    });
+    }
   });
 };
 

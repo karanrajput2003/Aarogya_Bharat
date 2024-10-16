@@ -15,11 +15,6 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-const path = require('path');
-
-// Serve static files from the "public" directory
-app.use('./public/qrcodes', express.static(path.join(__dirname, 'controllers/public/qrcodes')));
-
 const db = require("./app/models");
 const Role = db.role;
 const User = db.user;
