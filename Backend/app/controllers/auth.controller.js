@@ -10,49 +10,49 @@ const path = require("path");
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 
-exports.signup = async (req, res) => {
+exports.signup = (req, res) => {
   const user = new User({
     username: req.body.username,
     email: req.body.email,
     age: req.body.age,
     aadhar_no: req.body.aadhar_no,
     Address: req.body.Address,
-    password: bcrypt.hashSync(req.body.password, 8),
+    password: bcrypt.hashSync(req.body.password, 8)
   });
 
-  try {
-    // Save user to database first
-    const savedUser = await user.save();
-
-    // Generate the QR code
-    const qrCodeData = `https://aarogya-bharat-qr.vercel.app/${savedUser._id}`; // URL to encode in QR code
-    const qrCodeDir = path.join(__dirname, "public", "qrcodes"); // Directory for QR codes
-    const qrCodePath = path.join(qrCodeDir, `${savedUser._id}.png`);
-
-    // Check if directory exists, create if not
-    if (!fs.existsSync(qrCodeDir)) {
-      fs.mkdirSync(qrCodeDir, { recursive: true }); // Create the directory if it does not exist
+  user.save((err, user) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
     }
 
-    // Generate and save the QR code image
-    await QRCode.toFile(qrCodePath, qrCodeData);
+    const qrCodeData = `https://aarogya-bharat-qr.vercel.app/id/${user._id}`; // Generate the URL for the QR code
 
-    // Update the user document with the path to the QR code image
-    savedUser.qrCodePath = `/qrcodes/${savedUser._id}.png`; // Relative path to serve the image
-    await savedUser.save();
+    // Create a QR code image
+    QRCode.toFile(path.join(__dirname, 'public', 'qrcodes', `${user._id}.png`), qrCodeData, (err) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send({ message: 'Failed to generate QR code' });
+      }
 
-    res.status(201).json({
-      _id: savedUser._id,
-      username: savedUser.username,
-      email: savedUser.email,
-      age: savedUser.age,
-      aadhar_no: savedUser.aadhar_no,
-      Address: savedUser.Address,
-      qrCodePath: savedUser.qrCodePath, // Return the QR code path
+      // Save the QR code path to the user document
+      user.qrCodePath = `/public/qrcodes/${user._id}.png`; // Adjust the path as necessary
+
+      // Save the user with the QR code path
+      user.save(err => {
+        if (err) {
+          res.status(500).send({ message: err });
+          return;
+        }
+        res.status(201).json({
+          _id: user._id,
+          username: user.username,
+          email: user.email,
+          qrCodePath: user.qrCodePath // Include the QR code path in the response
+        });
+      });
     });
-  } catch (err) {
-    res.status(500).send({ message: err.message });
-  }
+  });
 };
 
 exports.signin = (req, res) => {

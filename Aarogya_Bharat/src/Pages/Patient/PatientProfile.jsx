@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom'; // Import useParams
-import Navbar from '../../Components/Patient/Navbar';
-import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom"; // Import useParams
+import Navbar from "../../Components/Patient/Navbar";
+import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
 
 function PatientProfile() {
   const { patientId } = useParams(); // Get patientId from URL params
@@ -12,9 +12,11 @@ function PatientProfile() {
   useEffect(() => {
     const fetchPatientData = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/patient/${patientId}`);
+        const response = await fetch(
+          `https://aarogya-bharat-backend.vercel.app/patient/${patientId}`
+        );
         if (!response.ok) {
-          throw new Error('Failed to fetch patient data');
+          throw new Error("Failed to fetch patient data");
         }
         const data = await response.json();
         setPatientData(data);
@@ -46,13 +48,16 @@ function PatientProfile() {
           </h1>
 
           <div className="bg-white rounded-lg shadow-md p-6 md:p-8 lg:p-10">
-            <h2 className="text-xl font-semibold mb-4 border-b pb-2 text-black">Personal Information:</h2>
+            <h2 className="text-xl font-semibold mb-4 border-b pb-2 text-black">
+              Personal Information:
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
                 <FaUser className="text-2xl text-indigo-600 mr-3" />
                 <div>
                   <p className="text-gray-700 font-medium">Name:</p>
-                  <p className="text-gray-900">{patientData.name}</p>
+                  <p className="text-gray-900">{patientData.username}</p>{" "}
+                  {/* Updated to use username */}
                 </div>
               </div>
 
@@ -84,12 +89,15 @@ function PatientProfile() {
                 <FaMapMarkerAlt className="text-2xl text-indigo-600 mr-3" />
                 <div>
                   <p className="text-gray-700 font-medium">Address:</p>
-                  <p className="text-gray-900">{patientData.address}</p>
+                  <p className="text-gray-900">{patientData.Address}</p>{" "}
+                  {/* Updated to use Address */}
                 </div>
               </div>
 
               <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
-                <p className="text-2xl text-indigo-600 mr-3">{patientData.gender}</p>
+                <p className="text-2xl text-indigo-600 mr-3">
+                  {patientData.gender}
+                </p>
                 <div>
                   <p className="text-gray-700 font-medium">Gender:</p>
                   <p className="text-gray-900">{patientData.gender}</p>
@@ -97,12 +105,12 @@ function PatientProfile() {
               </div>
 
               {/* Display QR Code */}
-              {patientData.qrCodePath && (
+              {patientData && (
                 <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm col-span-2">
-                  <img 
-                    src={`https://aarogya-bharat-backend.vercel.app/public${patientData.qrCodePath}`} 
-                    alt="QR Code" 
-                    className="w-24 h-24" 
+                  <img
+                    src={`http://localhost:8080/public/qrcodes/${patientId}.png`}
+                    alt="QR Code"
+                    className="w-24 h-24"
                   />
                 </div>
               )}
