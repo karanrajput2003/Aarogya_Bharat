@@ -1,10 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import HomeImg from '../../assets/Home/doctor.svg';
+import { useSelector } from 'react-redux';
+
+// const Component = () => {
+//   const userId = useSelector((state) => state.auth.userId);
+  
+//   return <div>User ID: {userId}</div>;
+// };
 
 function MainPage() {
+  const userId = useSelector((state) => state.auth.userId);
   return (
     <section className="w-full pt-12 md:pt-24 lg:pt-32 bg-gradient-to-b from-[#073243] via-[#0a4c59] to-[#0d6270]">
+      <div>User ID: {userId}</div>
       <div className="container space-y-10 xl:space-y-16">
         <div className="grid gap-4 px-10 md:grid-cols-2 md:gap-16">
           <div>

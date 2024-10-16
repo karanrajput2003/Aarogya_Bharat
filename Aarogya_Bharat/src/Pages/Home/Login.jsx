@@ -5,12 +5,14 @@ import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch } from 'react-redux';
+import { login } from '../../redux/authSlice'; // Adjust path as necessary
 
 function Login() {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [isLoading, setIsLoading] = useState(false); // Loading state
-  const [errorMessage, setErrorMessage] = useState(''); // Error message state
   const navigate = useNavigate(); // Navigation
+  const dispatch = useDispatch(); // Initialize dispatch
 
   const onSubmit = async (data) => {
     setIsLoading(true); // Start loading
@@ -20,8 +22,14 @@ function Login() {
         password: data.password,
       });
 
-      console.log(response.data.email);
-      console.log(response.data.roles[0]);
+      // Log the response for debugging
+      console.log(response.data);
+
+      // Assuming the response contains user ID and roles
+      const userId = response.data.id; // Adjust based on your API response
+
+      // Dispatch login action to store user ID
+      dispatch(login({ userId }));
 
       // Redirect based on role
       if (response.data.roles[0] === "ROLE_USER") {

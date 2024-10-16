@@ -1,7 +1,16 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+
+// const Component = () => {
+//   const userId = useSelector((state) => state.auth.userId);
+
+//   return <div>User ID: {userId}</div>;
+// };
 
 function Navbar() {
+  const userId = useSelector((state) => state.auth.userId);
+
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -72,11 +81,11 @@ function Navbar() {
             My Appoiments
           </Link>
           <Link
-                  to="/patient/profile"
-                  className="text-sm font-medium hover:underline underline-offset-4"
-                >
-                  Profile
-                </Link>
+            to={`/patient/profile/${userId}`}
+            className="text-sm font-medium hover:underline underline-offset-4"
+          >
+            Profile
+          </Link>
           <Link
             to="/"
             className="text-sm font-medium hover:underline underline-offset-4"
@@ -90,35 +99,44 @@ function Navbar() {
           <nav className="lg:hidden absolute top-14 left-0 w-full shadow-lg bg-[#073243]">
             <ul className="flex flex-col items-center gap-4 p-4">
               <li>
-                <Link to="/patient" className="text-sm font-medium hover:underline">
+                <Link
+                  to="/patient"
+                  className="text-sm font-medium hover:underline"
+                >
                   Home
                 </Link>
               </li>
               <li>
-                <Link to="/patient/finddoctor" className="text-sm font-medium hover:underline">
-                Find a Doctor
-                </Link>
-              </li>
-              <li>
-                <Link to="/patient/myappointments" className="text-sm font-medium hover:underline">
-                My Appoiments
+                <Link
+                  to="/patient/finddoctor"
+                  className="text-sm font-medium hover:underline"
+                >
+                  Find a Doctor
                 </Link>
               </li>
               <li>
                 <Link
-                  to="/patient/profile"
+                  to="/patient/myappointments"
+                  className="text-sm font-medium hover:underline"
+                >
+                  My Appoiments
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={`/patient/profile/${userId}`}
                   className="text-sm font-medium hover:underline underline-offset-4"
                 >
                   Profile
                 </Link>
               </li>
               <li>
-              <Link
-            to="/"
-            className="text-sm font-medium hover:underline underline-offset-4"
-          >
-            Logout
-          </Link>
+                <Link
+                  to="/"
+                  className="text-sm font-medium hover:underline underline-offset-4"
+                >
+                  Logout
+                </Link>
               </li>
             </ul>
           </nav>
