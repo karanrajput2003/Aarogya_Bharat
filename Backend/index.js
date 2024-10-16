@@ -17,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const db = require("./app/models");
 const Role = db.role;
+const User = db.user;
 
 // mongoose.connect("mongodb+srv://karan_admin:Kar2003@cluster0.oq0g1g1.mongodb.net/userDB", {useNewUrlParser: true});
 
@@ -90,7 +91,7 @@ function initial() {
 // 
 app.get('/patient/:id', async (req, res) => {
   try {
-    const patient = await Patient.findById(req.params.id);
+    const patient = await User.findById(req.params.id);
     if (!patient) {
       return res.status(404).send({ message: 'Patient not found' });
     }

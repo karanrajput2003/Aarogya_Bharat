@@ -12,7 +12,7 @@ function PatientProfile() {
   useEffect(() => {
     const fetchPatientData = async () => {
       try {
-        const response = await fetch(`/api/patient/${patientId}`); // Adjust the URL as necessary
+        const response = await fetch(`https://aarogya-bharat-backend.vercel.app/patient/${patientId}`); // Adjust the URL as necessary
         if (!response.ok) {
           throw new Error('Failed to fetch patient data');
         }
