@@ -6,12 +6,8 @@ const dbConfig = require("./app/config/db.config");
 
 const app = express();
 
-var corsOptions = {
-  credentials: true,
-  origin: "https://aarogya-bharat.vercel.app"
-};
 
-app.use(cors(corsOptions));
+app.use(cors());
 
 // parse requests of content-type - application/json
 app.use(express.json());
@@ -88,3 +84,18 @@ function initial() {
     }
   });
 }
+
+
+
+// 
+app.get('/patient/:id', async (req, res) => {
+  try {
+    const patient = await Patient.findById(req.params.id);
+    if (!patient) {
+      return res.status(404).send({ message: 'Patient not found' });
+    }
+    res.status(200).send(patient);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+});

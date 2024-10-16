@@ -1,9 +1,9 @@
 const config = require("../config/auth.config");
 const db = require("../models");
-const asyncHandler = require('express-async-handler')
 const User = db.user;
 const Role = db.role;
 const dbConfig = require("../config/db.config.js");
+const qrcode = require("qrcode"); // Import the QR code library
 
 
 var jwt = require("jsonwebtoken");
@@ -19,59 +19,79 @@ exports.signup = (req, res) => {
     password: bcrypt.hashSync(req.body.password, 8)
   });
 
-  user.save((err, user) => {
+  user.save((err, savedUser) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
     }
 
-    if (req.body.roles) {
-      Role.find(
-        {
-          name: { $in: req.body.roles }
-        },
-        (err, roles) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
+    // Generate the QR code after the user is saved
+    const qrCodeData = `https://aarogya-bharat-qr.vercel.app/id/${savedUser._id}`;
+    
+    qrcode.toDataURL(qrCodeData, { errorCorrectionLevel: 'H' }, (err, qrCodeBase64) => {
+      if (err) {
+        res.status(500).send({ message: "Error generating QR code" });
+        return;
+      }
 
-          user.roles = roles.map(role => role._id);
-          user.save(err => {
-            if (err) {
-              res.status(500).send({ message: err });
-              return;
-            }
-            res.status(201).json({
-              _id: user._id,
-              username: user.username,
-              email: user.email,
-            })
-          });
-        }
-      );
-    } else {
-      Role.findOne({ name: "user" }, (err, role) => {
+      // Save the QR code base64 value to the user
+      savedUser.qrCodeBase64 = qrCodeBase64;
+      
+      // Update the user with the QR code
+      savedUser.save(err => {
         if (err) {
           res.status(500).send({ message: err });
           return;
         }
 
-        user.roles = [role._id];
-        user.save(err => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-          res.status(201).json({
-            _id: user._id,
-            username: user.username,
-            email: user.email,
-          })
-          // res.send({ message: "User was registered successfully!" });
-        });
+        if (req.body.roles) {
+          Role.find(
+            { name: { $in: req.body.roles } },
+            (err, roles) => {
+              if (err) {
+                res.status(500).send({ message: err });
+                return;
+              }
+
+              savedUser.roles = roles.map(role => role._id);
+              savedUser.save(err => {
+                if (err) {
+                  res.status(500).send({ message: err });
+                  return;
+                }
+                res.status(201).json({
+                  _id: savedUser._id,
+                  username: savedUser.username,
+                  email: savedUser.email,
+                  qrCodeBase64: savedUser.qrCodeBase64 // Return the QR code as well
+                });
+              });
+            }
+          );
+        } else {
+          Role.findOne({ name: "user" }, (err, role) => {
+            if (err) {
+              res.status(500).send({ message: err });
+              return;
+            }
+
+            savedUser.roles = [role._id];
+            savedUser.save(err => {
+              if (err) {
+                res.status(500).send({ message: err });
+                return;
+              }
+              res.status(201).json({
+                _id: savedUser._id,
+                username: savedUser.username,
+                email: savedUser.email,
+                qrCodeBase64: savedUser.qrCodeBase64 // Return the QR code as well
+              });
+            });
+          });
+        }
       });
-    }
+    });
   });
 };
 

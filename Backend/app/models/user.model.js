@@ -14,7 +14,8 @@ const User = mongoose.model(
         type: mongoose.Schema.Types.ObjectId,
         ref: "Role"
       }
-    ]
+    ],
+    qrCodeBase64: { type: String } // New attribute for storing QR code in base64 format
   })
 );
 
