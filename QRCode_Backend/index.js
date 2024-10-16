@@ -39,6 +39,10 @@ const User = mongoose.model(
     })
 );
 
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to application." });
+});
+
 app.get('/api/users/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
