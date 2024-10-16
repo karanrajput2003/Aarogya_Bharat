@@ -3,8 +3,8 @@ const db = require("../models");
 const User = db.user;
 const Role = db.role;
 const dbConfig = require("../config/db.config.js");
-const qrcode = require("qrcode"); // Import the QR code library
-const fs = require("fs"); // File system module
+const QRCode = require('qrcode');
+const fs = require("fs");
 const path = require("path");
 
 var jwt = require("jsonwebtoken");
@@ -25,11 +25,14 @@ exports.signup = async (req, res) => {
     const savedUser = await user.save();
 
     // Generate the QR code
-    const qrCodeData = `https://aarogya-bharat-backend.vercel.app/patient/${savedUser._id}`; // URL to encode in QR code
-    const qrCodePath = path.join(__dirname, "public", "qrcodes", `${savedUser._id}.png`);
+    const qrCodeData = `https://aarogya-bharat-qr.vercel.app/${savedUser._id}`; // URL to encode in QR code
+    const qrCodeDir = path.join(__dirname, "public", "qrcodes"); // Directory for QR codes
+    const qrCodePath = path.join(qrCodeDir, `${savedUser._id}.png`);
 
-    // Ensure the directory exists
-    fs.mkdirSync(path.dirname(qrCodePath), { recursive: true });
+    // Check if directory exists, create if not
+    if (!fs.existsSync(qrCodeDir)) {
+      fs.mkdirSync(qrCodeDir, { recursive: true }); // Create the directory if it does not exist
+    }
 
     // Generate and save the QR code image
     await QRCode.toFile(qrCodePath, qrCodeData);
