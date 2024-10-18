@@ -16,7 +16,7 @@ function PatientProfile() {
     const fetchPatientData = async () => {
       try {
         const response = await fetch(
-          `https://aarogya-bharat-backend.vercel.app/patient/${patientId}`
+          `${import.meta.env.VITE_BACKEND}/patient/${patientId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch patient data");

@@ -18,6 +18,8 @@ import FindDoctor from './Pages/Patient/FindDoctor.jsx';
 import MyAppointments from './Pages/Patient/MyAppointments.jsx';
 import DoctorProfile from './Pages/Patient/DoctorProfile.jsx';
 import PatientProfile from './Pages/Patient/PatientProfile.jsx';
+import DoctorProfilePage from './Pages/Doctor/DoctorProfile.jsx';
+import DoctorUpdateProfile from './Pages/Doctor/DoctorUpdateProfile.jsx';
 
 // Create the router
 const router = createBrowserRouter([
@@ -40,6 +42,14 @@ const router = createBrowserRouter([
   {
     path: '/doctor',
     element: <DoctorHome />,
+  },
+  {
+    path: '/doctor/updateprofile',
+    element: <DoctorUpdateProfile />,
+  },
+  {
+    path: '/doctor/profile',
+    element: <DoctorProfilePage />,
   },
   {
     path: '/patient',

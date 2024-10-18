@@ -14,12 +14,13 @@ function Login() {
   const [errorMessage, setErrorMessage] = useState(''); // Error message state
   const navigate = useNavigate(); // Navigation
   const dispatch = useDispatch(); // Initialize dispatch
+  // console.log(import.meta.env.VITE_BACKEND);
 
   const onSubmit = async (data) => {
     setIsLoading(true); // Start loading
     setErrorMessage(''); // Reset any previous error messages
     try {
-      const response = await axios.post('https://aarogya-bharat-backend.vercel.app/api/auth/signin', {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND}/api/auth/signin`, {
         email: data.email,
         password: data.password,
       });

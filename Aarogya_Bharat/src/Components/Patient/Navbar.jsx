@@ -84,6 +84,12 @@ function Navbar() {
             to={`/patient/profile/${userId}`}
             className="text-sm font-medium hover:underline underline-offset-4"
           >
+            Medical Records
+          </Link>
+          <Link
+            to={`/patient/profile/${userId}`}
+            className="text-sm font-medium hover:underline underline-offset-4"
+          >
             Profile
           </Link>
           <Link
@@ -121,6 +127,14 @@ function Navbar() {
                 >
                   My Appoiments
                 </Link>
+              </li>
+              <li>
+                <Link
+            to={`/patient/profile/${userId}`}
+            className="text-sm font-medium hover:underline underline-offset-4"
+          >
+            Medical Records
+          </Link>
               </li>
               <li>
                 <Link
