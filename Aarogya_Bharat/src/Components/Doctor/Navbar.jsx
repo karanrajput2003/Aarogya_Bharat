@@ -10,7 +10,7 @@ function Navbar() {
 
   return (
     <>
-      <header className="px-4 lg:px-6 h-14 flex items-center justify-between bg-[#073243]">
+      <header className="px-4 lg:px-6 h-14 flex items-center justify-between bg-[#073243] z-50">
         <Link className="flex items-center justify-center" to="/doctor/">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -87,7 +87,7 @@ function Navbar() {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <nav className="lg:hidden absolute top-14 left-0 w-full shadow-lg bg-[#073243]">
+          <nav className="lg:hidden absolute top-14 left-0 w-full shadow-lg bg-[#073243] z-50">
             <ul className="flex flex-col items-center gap-4 p-4">
               <li>
                 <Link to="/doctor/" className="text-sm font-medium hover:underline">

@@ -1,0 +1,14 @@
+# .gitignore
+
+# Ignore node_modules for the backend
+/Backend/node_modules
+
+# Ignore node_modules for the frontend
+/Aarogya_Bharat/node_modules
+
+/Aarogya_Bharat/.env
+
+/QRCode_Backend/node_modules
+
+
+/QRCode/node_modules
