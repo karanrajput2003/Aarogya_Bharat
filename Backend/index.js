@@ -18,6 +18,7 @@ const db = require("./app/models");
 const Role = db.role;
 const User = db.user;
 const MedicalRecord = db.record;
+const Doctor = db.doctor;
 
 // mongoose.connect("mongodb+srv://karan_admin:Kar2003@cluster0.oq0g1g1.mongodb.net/userDB", {useNewUrlParser: true});
 
@@ -138,5 +139,58 @@ app.get('/api/medicalRecords/:userId', async (req, res) => {
   } catch (error) {
     console.error('Error fetching medical records:', error);
     res.status(500).json({ message: 'Failed to retrieve medical records' });
+  }
+});
+
+
+
+app.post('/api/doctor/register', async (req, res) => {
+  try {
+    const { fileUrl, fields } = await fileparser(req);
+
+    // Create a new doctor instance and save it to the database
+    const newDoctor = new Doctor({
+      fullName: fields.fullName,
+      dateOfBirth: fields.dateOfBirth,
+      phoneNumber: fields.phoneNumber,
+      email: fields.email,
+      address: fields.address,
+      medicalDegrees: fields.medicalDegrees,
+      specializations: fields.specializations,
+      registrationNumber: fields.registrationNumber,
+      yearsOfExperience: fields.yearsOfExperience,
+      workHistory: fields.workHistory,
+      specialSkills: fields.specialSkills,
+      clinicName: fields.clinicName,
+      clinicAddress: fields.clinicAddress,
+      clinicContact: fields.clinicContact,
+      consultationTimings: fields.consultationTimings,
+      profilePicture: fileUrl,
+      password: fields.password
+    });
+
+    // Save doctor in the database
+    await newDoctor.save();
+
+    res.status(200).json({
+      message: 'Doctor registered successfully',
+      doctor: newDoctor
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.get('/api/doctor/profile/:doctorId', async (req, res) => {
+  try {
+    const doctor = await Doctor.findById(req.params.doctorId);
+    if (!doctor) {
+      return res.status(404).json({ message: 'Doctor not found' });
+    }
+    res.json(doctor);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
 });

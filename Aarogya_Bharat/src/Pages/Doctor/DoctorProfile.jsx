@@ -1,147 +1,110 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import Navbar from '../../Components/Doctor/Navbar';
 
-function DoctorProfilePage() {
-  const { register, handleSubmit, formState: { errors } } = useForm();
-  const userId = useSelector((state) => state.auth.userId);
+// Define the endpoint for fetching the doctor data
+const API_URL = 'http://localhost:5000/api/doctor/profile/'; // Update with your actual URL if different
 
-  const onSubmit = (data) => {
-    console.log('Form Data:', data);
-    // You can add API call to save data
-  };
+export default function DoctorProfile() {
+  const [doctorData, setDoctorData] = useState(null); // State to store doctor data
+  const [isLoading, setIsLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
+
+  // Assuming the doctor ID is hardcoded or passed via route params (can be done via React Router)
+  const doctorId = '672f3aa9f5a7043d2fda6269'; // Replace with actual doctor ID from URL or user session
+
+  useEffect(() => {
+    const fetchDoctorData = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND}/api/doctor/profile/${doctorId}`);
+        if (!response.ok) {
+          throw new Error('Error fetching doctor data');
+        }
+        const data = await response.json();
+        setDoctorData(data);
+        setIsLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setIsLoading(false);
+      }
+    };
+
+    fetchDoctorData();
+  }, [doctorId]);
+
+  // If loading, show a loading spinner or message
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  // If error occurs, display error message
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
-    <section className="w-full pt-12 md:pt-24 lg:pt-32 bg-gradient-to-b from-[#073243] via-[#0a4c59] to-[#0d6270] text-white">
-      <div className="container space-y-10 xl:space-y-16">
-        <h2 className="text-3xl font-bold text-center">Doctor Profile Setup</h2>
-        
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* Personal Information */}
-          <div className="space-y-4">
-            <h3 className="text-2xl font-semibold">Personal Information</h3>
-            
-            <div>
-              <label>Name</label>
-              <input {...register('name', { required: true })} className="w-full px-4 py-2 mt-2 bg-white text-black" />
-              {errors.name && <p className="text-red-500">Name is required</p>}
-            </div>
+    <>
+      <Navbar />
+      <section className="w-full py-12 md:py-24 lg:py-16 bg-gradient-to-b from-[#073243] via-[#0a4c59] to-[#0d6270] text-white">
+        <div className="container mx-auto px-4">
+          <div className="w-full max-w-4xl mx-auto bg-white/10 backdrop-blur-lg p-8 border border-gray-600 text-white rounded-lg shadow-md">
+            <header className="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-gray-500">
+              <div className="w-32 h-32 rounded-full overflow-hidden">
+                <img src={doctorData.profilePicture} alt={doctorData.fullName} width={128} height={128} className="object-cover" />
+              </div>
+              <div className="text-center sm:text-left">
+                <h1 className="text-3xl font-bold">{doctorData.fullName}</h1>
+                <p className="text-xl mt-1">{doctorData.specializations}</p>
+                <span className="inline-block mt-2 bg-gray-800 text-white py-1 px-3 rounded-full text-sm">Reg. No: {doctorData.registrationNumber}</span>
+              </div>
+            </header>
+            <main className="grid gap-6 mt-6">
+              <Section title="Personal Information">
+                <InfoItem label="Date of Birth" value={doctorData.dateOfBirth} />
+                <InfoItem label="Phone" value={doctorData.phoneNumber} />
+                <InfoItem label="Email" value={doctorData.email} />
+                <InfoItem label="Address" value={doctorData.address} />
+              </Section>
 
-            <div>
-              <label>Gender</label>
-              <select {...register('gender', { required: true })} className="w-full px-4 py-2 mt-2 bg-white text-black">
-                <option value="">Select Gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-              {errors.gender && <p className="text-red-500">Gender is required</p>}
-            </div>
+              <Section title="Professional Qualification">
+                <InfoItem label="Medical Degrees" value={doctorData.medicalDegrees} />
+                <InfoItem label="Specializations" value={doctorData.specializations} />
+              </Section>
 
-            <div>
-              <label>City</label>
-              <input {...register('city', { required: true })} className="w-full px-4 py-2 mt-2 bg-white text-black" />
-              {errors.city && <p className="text-red-500">City is required</p>}
-            </div>
+              <Section title="Experience">
+                <InfoItem label="Years of Experience" value={`${doctorData.yearsOfExperience} years`} />
+                <InfoItem label="Work History" value={doctorData.workHistory} />
+                <InfoItem label="Special Skills" value={doctorData.specialSkills} />
+              </Section>
 
-            <div>
-              <label>Years of Experience</label>
-              <input type="number" {...register('experience', { required: true })} className="w-full px-4 py-2 mt-2 bg-white text-black" />
-              {errors.experience && <p className="text-red-500">Experience is required</p>}
-            </div>
-
-            <div>
-              <label>About Me</label>
-              <textarea {...register('about', { required: true })} className="w-full px-4 py-2 mt-2 bg-white text-black" />
-              {errors.about && <p className="text-red-500">About Me is required</p>}
-            </div>
-
-            <div>
-              <label>Profile Photo</label>
-              <input type="file" {...register('profilePhoto')} className="w-full px-4 py-2 mt-2 bg-white text-black" />
-            </div>
-
-            <div>
-              <label>Contact Details</label>
-              <input {...register('contact', { required: true })} className="w-full px-4 py-2 mt-2 bg-white text-black" />
-              {errors.contact && <p className="text-red-500">Contact Details are required</p>}
-            </div>
+              <Section title="Clinic Details">
+                <InfoItem label="Clinic Name" value={doctorData.clinicName} />
+                <InfoItem label="Clinic Address" value={doctorData.clinicAddress} />
+                <InfoItem label="Clinic Contact" value={doctorData.clinicContact} />
+                <InfoItem label="Consultation Timings" value={doctorData.consultationTimings} />
+              </Section>
+            </main>
           </div>
-
-          {/* Education and Specialization */}
-          <div className="space-y-4">
-            <h3 className="text-2xl font-semibold">Education & Specialization</h3>
-
-            <div>
-              <label>Education</label>
-              <textarea {...register('education', { required: true })} className="w-full px-4 py-2 mt-2 bg-white text-black" />
-              {errors.education && <p className="text-red-500">Education is required</p>}
-            </div>
-
-            <div>
-              <label>Specialization</label>
-              <textarea {...register('specialization', { required: true })} className="w-full px-4 py-2 mt-2 bg-white text-black" />
-              {errors.specialization && <p className="text-red-500">Specialization is required</p>}
-            </div>
-          </div>
-
-          {/* Registration and Documents */}
-          <div className="space-y-4">
-            <h3 className="text-2xl font-semibold">Registration & Documents</h3>
-
-            <div>
-              <label>Registration Details</label>
-              <textarea {...register('registration', { required: true })} className="w-full px-4 py-2 mt-2 bg-white text-black" />
-              {errors.registration && <p className="text-red-500">Registration Details are required</p>}
-            </div>
-
-            <div>
-              <label>Upload Documents</label>
-              <input type="file" {...register('documents')} multiple className="w-full px-4 py-2 mt-2 bg-white text-black" />
-            </div>
-          </div>
-
-          {/* Clinics Details */}
-          <div className="space-y-4">
-            <h3 className="text-2xl font-semibold">Clinics Details</h3>
-
-            <div>
-              <label>Clinic Name</label>
-              <input {...register('clinicName', { required: true })} className="w-full px-4 py-2 mt-2 bg-white text-black" />
-              {errors.clinicName && <p className="text-red-500">Clinic Name is required</p>}
-            </div>
-
-            <div>
-              <label>Clinic Address</label>
-              <textarea {...register('clinicAddress', { required: true })} className="w-full px-4 py-2 mt-2 bg-white text-black" />
-              {errors.clinicAddress && <p className="text-red-500">Clinic Address is required</p>}
-            </div>
-          </div>
-
-          {/* Awards and Membership */}
-          <div className="space-y-4">
-            <h3 className="text-2xl font-semibold">Awards & Membership</h3>
-
-            <div>
-              <label>Awards</label>
-              <textarea {...register('awards')} className="w-full px-4 py-2 mt-2 bg-white text-black" />
-            </div>
-
-            <div>
-              <label>Memberships</label>
-              <textarea {...register('memberships')} className="w-full px-4 py-2 mt-2 bg-white text-black" />
-            </div>
-          </div>
-
-          <div className="text-center">
-            <button type="submit" className="mt-6 bg-indigo-900 px-6 py-2 text-white rounded-lg hover:bg-indigo-700">
-              Submit
-            </button>
-          </div>
-        </form>
-      </div>
-    </section>
+        </div>
+      </section>
+    </>
   );
 }
 
-export default DoctorProfilePage;
+function Section({ title, children }) {
+  return (
+    <div className="py-4">
+      <h2 className="text-xl font-semibold mb-4">{title}</h2>
+      <div className="grid gap-2">{children}</div>
+      <hr className="mt-4 border-gray-600" />
+    </div>
+  );
+}
+
+function InfoItem({ label, value }) {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+      <dt className="font-medium text-gray-300">{label}:</dt>
+      <dd className="sm:col-span-2">{value}</dd>
+    </div>
+  );
+}

@@ -72,10 +72,10 @@ function Navbar() {
             Contact
           </Link>
           <Link
-            to="./profile"
+            to="/doctor/profile"
             className="text-sm font-medium hover:underline underline-offset-4"
           >
-            My Approval
+            My Profile
           </Link>
               <Link
             to="/"
@@ -109,7 +109,7 @@ function Navbar() {
                   to="/doctor/profile"
                   className="text-sm font-medium hover:underline underline-offset-4"
                 >
-                  My Approval
+                  My Profile
                 </Link>
               </li>
               <li>

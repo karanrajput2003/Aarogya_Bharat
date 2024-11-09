@@ -65,7 +65,7 @@ function Login() {
             <div className="mt-4 text-center">
               <p className="text-sm text-[#073243]">
                 Don’t have an account?{' '}
-                <Link to="/register" className="text-[#095d7e] hover:underline">
+                <Link to="/doctorregister" className="text-[#095d7e] hover:underline">
                   Sign up here
                 </Link>
               </p>

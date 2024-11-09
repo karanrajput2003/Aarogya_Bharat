@@ -42,6 +42,10 @@ const router = createBrowserRouter([
     element: <Doctorlogin />,
   },
   {
+    path: '/doctorregister',
+    element: <DoctorUpdateProfile />,
+  },
+  {
     path: '/doctor',
     element: <DoctorHome />,
   },
