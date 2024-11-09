@@ -54,19 +54,19 @@ function Navbar() {
         {/* Desktop Menu */}
         <nav className="hidden lg:flex gap-4 sm:gap-6 ml-auto">
           <Link
-            to="/doctor/"
+            to="/doctor/dashboard/"
             className="text-sm font-medium hover:underline underline-offset-4"
           >
             Dashboard
           </Link>
           <Link
-            to="/doctor/"
+            to="/doctor/appointments"
             className="text-sm font-medium hover:underline underline-offset-4"
           >
-            About
+            Appointments
           </Link>
           <Link
-            to="/doctor/"
+            to="/doctor"
             className="text-sm font-medium hover:underline underline-offset-4"
           >
             Contact
@@ -77,7 +77,7 @@ function Navbar() {
           >
             My Profile
           </Link>
-              <Link
+          <Link
             to="/"
             className="text-sm font-medium hover:underline underline-offset-4"
           >
@@ -90,17 +90,34 @@ function Navbar() {
           <nav className="lg:hidden absolute top-14 left-0 w-full shadow-lg bg-[#073243] z-50">
             <ul className="flex flex-col items-center gap-4 p-4">
               <li>
-                <Link to="/doctor/" className="text-sm font-medium hover:underline">
-                  Services
+                <Link
+                  to="/doctor/dashboard/"
+                  className="text-sm font-medium hover:underline underline-offset-4"
+                >
+                  Dashboard
                 </Link>
               </li>
               <li>
-                <Link to="/doctor/" className="text-sm font-medium hover:underline">
+                <Link
+                  to="/doctor/appointments"
+                  className="text-sm font-medium hover:underline underline-offset-4"
+                >
+                  Appointments
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/doctor/"
+                  className="text-sm font-medium hover:underline"
+                >
                   About
                 </Link>
               </li>
               <li>
-                <Link to="/doctor/" className="text-sm font-medium hover:underline">
+                <Link
+                  to="/doctor/"
+                  className="text-sm font-medium hover:underline"
+                >
                   Contact
                 </Link>
               </li>

@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 require('dotenv').config();
 const dbConfig = require("./app/config/db.config");
-
+var bcrypt = require("bcryptjs");
 const app = express();
 
 
@@ -166,10 +166,9 @@ app.post('/api/doctor/register', async (req, res) => {
       clinicContact: fields.clinicContact,
       consultationTimings: fields.consultationTimings,
       profilePicture: fileUrl,
-      password: fields.password
+      password: bcrypt.hashSync(fields.password, 8)
     });
 
-    // Save doctor in the database
     await newDoctor.save();
 
     res.status(200).json({
@@ -179,6 +178,27 @@ app.post('/api/doctor/register', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.get('/api/getdoctors', async (req, res) => {
+  try {
+    const doctors = await Doctor.find({}, 'profilePicture fullName specializations medicalDegrees');
+    res.json(doctors);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.get('/api/doctordetail/:doctorId', async (req, res) => {
+  try {
+    const doctors = await Doctor.findById(req.params.doctorId);
+    if (!doctors) {
+      return res.status(404).json({ message: 'Doctor not found' });
+    }
+    res.json(doctors);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 

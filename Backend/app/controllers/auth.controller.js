@@ -2,6 +2,7 @@ const config = require("../config/auth.config");
 const db = require("../models");
 const User = db.user;
 const Role = db.role;
+const Doctor = db.doctor;
 const dbConfig = require("../config/db.config.js");
 
 var jwt = require("jsonwebtoken");
@@ -130,6 +131,43 @@ exports.signin = (req, res) => {
         accessToken: token
       });
     });
+};
+
+exports.doctorsignin = (req, res) => {
+  Doctor.findOne({ email: req.body.email })
+  .exec((err, user) => {
+
+    if (!user) {
+      console.warn("User not found for email:", req.body.email);
+      return res.status(404).json({ message: "User Not found." });
+    }
+
+    // Check password validity
+    const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
+    if (!passwordIsValid) {
+      console.warn("Invalid password attempt for email:", req.body.email);
+      return res.status(401).json({ accessToken: null, message: "Invalid Password!" });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign({ id: user.id }, dbConfig.JWT_SECRET_KEY, {
+      algorithm: 'HS256',
+      expiresIn: 86400, // 24 hours
+    });
+
+    res.cookie(String(user._id), token, {
+      path: '/',
+      expires: new Date(Date.now() + 1000 * 60 * 60), // 1 hour
+      httpOnly: true,
+      sameSite: 'lax'
+    });
+
+    res.status(200).json({
+      id: user._id,
+      email: user.email,
+      accessToken: token
+    });
+  });
 };
 
 

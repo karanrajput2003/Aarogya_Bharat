@@ -11,17 +11,18 @@ import Login from './Pages/Home/Login.jsx';
 import Register from './Pages/Home/Register.jsx';
 import Doctorlogin from './Pages/Doctor/Login.jsx';
 import DoctorHome from './Pages/Doctor/Home.jsx';
-
+import DoctorProfilePage from './Pages/Doctor/DoctorProfile.jsx';
+import DoctorUpdateProfile from './Pages/Doctor/DoctorUpdateProfile.jsx';
+import DoctorDashboard from './Pages/Doctor/DoctorDashboard.jsx';
 // Patient
 import PatientHome from './Pages/Patient/PatientHome.jsx';
 import FindDoctor from './Pages/Patient/FindDoctor.jsx';
 import MyAppointments from './Pages/Patient/MyAppointments.jsx';
 import DoctorProfile from './Pages/Patient/DoctorProfile.jsx';
 import PatientProfile from './Pages/Patient/PatientProfile.jsx';
-import DoctorProfilePage from './Pages/Doctor/DoctorProfile.jsx';
-import DoctorUpdateProfile from './Pages/Doctor/DoctorUpdateProfile.jsx';
 import PatientAddRecord from './Pages/Patient/PatientAddRecord.jsx';
 import PatientUploadedRecords from './Pages/Patient/PatientUploadedRecords.jsx';
+import DoctorAppointments from './Pages/Doctor/DoctorAppointments.jsx';
 
 // Create the router
 const router = createBrowserRouter([
@@ -56,6 +57,14 @@ const router = createBrowserRouter([
   {
     path: '/doctor/profile',
     element: <DoctorProfilePage />,
+  },
+  {
+    path: '/doctor/dashboard',
+    element: <DoctorDashboard />,
+  },
+  {
+    path: '/doctor/appointments',
+    element: <DoctorAppointments />,
   },
   {
     path: '/patient',

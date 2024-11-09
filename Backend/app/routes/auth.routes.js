@@ -1,5 +1,11 @@
 const { verifySignUp } = require("../middlewares");
 const controller = require("../controllers/auth.controller");
+const config = require("../config/auth.config");
+const db = require("../models");
+const Doctor = db.doctor;
+const dbConfig = require("../config/db.config.js");
+var jwt = require("jsonwebtoken");
+var bcrypt = require("bcryptjs");
 
 module.exports = function(app) {
   app.use(function(req, res, next) {
@@ -20,5 +26,7 @@ module.exports = function(app) {
   );
 
   app.post("/api/auth/signin", controller.signin);
+
+  app.post("/api/auth/doctorsignin", controller.doctorsignin);
 
 };

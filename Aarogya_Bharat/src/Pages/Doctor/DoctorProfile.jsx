@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../../Components/Doctor/Navbar';
+import { useSelector } from 'react-redux';
 
-// Define the endpoint for fetching the doctor data
-const API_URL = 'http://localhost:5000/api/doctor/profile/'; // Update with your actual URL if different
 
 export default function DoctorProfile() {
+  const doctorId = useSelector((state) => state.auth.userId);
   const [doctorData, setDoctorData] = useState(null); // State to store doctor data
   const [isLoading, setIsLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
 
   // Assuming the doctor ID is hardcoded or passed via route params (can be done via React Router)
-  const doctorId = '672f3aa9f5a7043d2fda6269'; // Replace with actual doctor ID from URL or user session
+  // const doctorId = '672f3aa9f5a7043d2fda6269'; 
 
   useEffect(() => {
     const fetchDoctorData = async () => {
