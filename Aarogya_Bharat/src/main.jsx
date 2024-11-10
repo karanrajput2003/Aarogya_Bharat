@@ -24,6 +24,18 @@ import PatientAddRecord from './Pages/Patient/PatientAddRecord.jsx';
 import PatientUploadedRecords from './Pages/Patient/PatientUploadedRecords.jsx';
 import DoctorAppointments from './Pages/Doctor/DoctorAppointments.jsx';
 
+//Admin
+import AdminHome from './Pages/Admin/AdminHome.jsx';
+import AdminDoctorApproval from './Pages/Admin/AdminDoctorApproval.jsx';
+import AdminDoctorDetails from './Pages/Admin/AdminDoctorDetails.jsx';
+import AdminAllPatients from './Pages/Admin/AdminAllPatients.jsx';
+import AdminAppointments from './Pages/Admin/AdminAppointments.jsx';
+import AdminAppointmentDetails from './Pages/Admin/AdminAppointmentDetail.jsx';
+import AdminPayment from './Pages/Admin/AdminPayment.jsx';
+import AdminPatientRecord from './Pages/Admin/AdminPatientRecord.jsx';
+import AdminInventory from './Pages/Admin/AdminInventory.jsx';
+import AdminSetting from './Pages/Admin/AdminSetting.jsx';
+
 // Create the router
 const router = createBrowserRouter([
   {
@@ -87,13 +99,54 @@ const router = createBrowserRouter([
     element: <PatientProfile />,
   },
   {
-    path: 'patient/addrecords',
+    path: '/patient/addrecords',
     element: <PatientAddRecord />,
   },
   {
-    path: 'patient/documents',
+    path: '/patient/documents',
     element: <PatientUploadedRecords />,
   },
+  {
+    path: '/admin',
+    element: <AdminHome />,
+  },
+  {
+    path: '/admin/doctors-approval',
+    element: <AdminDoctorApproval />,
+  },
+  {
+    path: '/admin/doctordetails/:id',
+    element: <AdminDoctorDetails />,
+  },
+  {
+    path: '/admin/allPatients',
+    element: <AdminAllPatients />,
+  },  
+  {
+    path: '/admin/appointments',
+    element: <AdminAppointments />,
+  },
+  {
+    path: '/admin/appointmentrdetails/:id',
+    element: <AdminAppointmentDetails />,
+  },
+  {
+    path: '/admin/payments',
+    element: <AdminPayment />,
+  },
+  {
+    path: '/admin/patient-record',
+    element: <AdminPatientRecord />,
+  },
+  {
+    path: '/admin/inventory',
+    element: <AdminInventory />,
+  },
+  {
+    path: '/admin/settings',
+    element: <AdminSetting />,
+  },
+
 ]);
 
 // Render the app
