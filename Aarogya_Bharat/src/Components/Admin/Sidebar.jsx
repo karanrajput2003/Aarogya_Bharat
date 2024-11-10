@@ -7,7 +7,9 @@ import {
   Settings,
   Package,
   Menu,
-  X
+  X,
+  hospital,
+  logout
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
@@ -20,7 +22,7 @@ const navItems = [
   { icon: Package, text: 'Inventory', href: '/admin/inventory' },
   { icon: CreditCard, text: 'Payments', href: '/admin/payments' },
   { icon: Settings, text: 'Settings', href: '/admin/settings' },
-  { icon: log-out, text: 'Logout', href: '/' },
+  { icon: logout, text: 'Logout', href: '/' },
 ]
 
 function Sidebar() {
