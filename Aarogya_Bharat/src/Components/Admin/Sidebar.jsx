@@ -8,21 +8,20 @@ import {
   Package,
   Menu,
   X,
-  hospital,
-  logout
+  Hospital,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 const navItems = [
   { icon: LayoutDashboard, text: 'Dashboard', href: '/admin' },
-  { icon: hospital, text: 'Doctors Approval', href: '/admin/doctors-approval' },
+  { icon: Hospital, text: 'Doctors Approval', href: '/admin/doctors-approval' },
   { icon: Calendar, text: 'Appointments', href: '/admin/appointments' },
   { icon: Users, text: 'Patients', href: '/admin/allPatients' },
   { icon: CreditCard, text: 'Patient Record', href: '/admin/patient-record' },
   { icon: Package, text: 'Inventory', href: '/admin/inventory' },
   { icon: CreditCard, text: 'Payments', href: '/admin/payments' },
   { icon: Settings, text: 'Settings', href: '/admin/settings' },
-  { icon: logout, text: 'Logout', href: '/' },
+  { icon: Users, text: 'Logout', href: '/' },
 ]
 
 function Sidebar() {
