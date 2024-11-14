@@ -35,6 +35,8 @@ import AdminPayment from './Pages/Admin/AdminPayment.jsx';
 import AdminPatientRecord from './Pages/Admin/AdminPatientRecord.jsx';
 import AdminInventory from './Pages/Admin/AdminInventory.jsx';
 import AdminSetting from './Pages/Admin/AdminSetting.jsx';
+import PatientBookSlot from './Pages/Patient/PatientBookSlot.jsx';
+import DoctorAddSlots from './Pages/Doctor/DoctorAddSlots.jsx';
 
 // Create the router
 const router = createBrowserRouter([
@@ -77,6 +79,10 @@ const router = createBrowserRouter([
   {
     path: '/doctor/appointments',
     element: <DoctorAppointments />,
+  },
+  {
+    path: '/doctor/addslots',
+    element: <DoctorAddSlots />,
   },
   {
     path: '/patient',
@@ -146,7 +152,10 @@ const router = createBrowserRouter([
     path: '/admin/settings',
     element: <AdminSetting />,
   },
-
+  {
+    path: '/patient/booking/:id',
+    element: <PatientBookSlot />,
+  },
 ]);
 
 // Render the app

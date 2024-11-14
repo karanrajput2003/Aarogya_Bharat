@@ -46,6 +46,11 @@ export default function DoctorProfile() {
       <Navbar />
       <section className="w-full py-12 md:py-24 lg:py-16 bg-gradient-to-b from-[#073243] via-[#0a4c59] to-[#0d6270] text-white">
         <div className="container mx-auto px-4">
+        <div className="mb-8 md:mb-10 lg:mb-12">
+            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem] text-white text-center">
+              Doctor Profile
+            </h1>
+          </div>
           <div className="w-full max-w-4xl mx-auto bg-white/10 backdrop-blur-lg p-8 border border-gray-600 text-white rounded-lg shadow-md">
             <header className="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-gray-500">
               <div className="w-32 h-32 rounded-full overflow-hidden">

@@ -1,83 +1,87 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 // Define the schema for the virtual consultation booking
 const virtualConsultationSchema = new Schema(
   {
     patient: {
+      userId : {
+        type : String
+      },
       name: {
         type: String,
-        required: true
+        required: true,
       },
-      contactInfo: {
-        phone: {
-          type: String,
-          required: true
-        },
-        email: {
-          type: String,
-          required: true
-        }
+      phone: {
+        type: String,
+        required: true,
+      },
+      email: {
+        type: String,
+        required: true,
       },
       medicalHistory: {
         type: String,
-        default: ''
+        default: "",
       },
       symptoms: {
         type: String,
-        required: true
+        required: true,
       },
       insuranceDetails: {
         provider: {
           type: String,
-          default: ''
+          default: "",
         },
         policyNumber: {
           type: String,
-          default: ''
-        }
-      }
+          default: "",
+        },
+      },
     },
     consultationDetails: {
       preferredDate: {
         type: Date,
-        required: true
+        required: true,
       },
       preferredTime: {
         type: String,
-        required: true // format: HH:mm A
+        required: true, // format: HH:mm A
       },
       doctorid: {
         type: String,
-        default: ''
-      }
+        default: "",
+      },
     },
     consentToConsultation: {
       type: Boolean,
-      required: true
+      required: true,
     },
     additionalNotes: {
       type: String,
-      default: ''
+      default: "",
     },
     status: {
       type: String,
-      enum: ['Scheduled', 'Completed', 'Cancelled'],
-      default: 'Scheduled'
+      enum: ["Scheduled", "Completed", "Cancelled"],
+      default: "Scheduled",
     },
     createdAt: {
       type: Date,
-      default: Date.now
+      default: Date.now,
     },
     updatedAt: {
       type: Date,
-      default: Date.now
-    }
+      default: Date.now,
+    },
   },
   { timestamps: true }
 );
 
 // Create and export the model
-const VirtualConsultationBooking = mongoose.model('VirtualConsultationBooking', virtualConsultationSchema);
+const VirtualConsultationBooking = mongoose.model(
+  "VirtualConsultationBooking",
+  virtualConsultationSchema
+);
 
 module.exports = VirtualConsultationBooking;

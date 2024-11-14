@@ -10,6 +10,8 @@ db.role = require("./role.model");
 db.record = require("./medialrecord.model");
 db.doctor = require("./doctor.model");
 db.consult = require("./consultation.model");
+db.slots = require("./slots.model");
+db.order = require("./order.model");
 db.ROLES = ["user", "admin", "moderator"];
 
 module.exports = db;

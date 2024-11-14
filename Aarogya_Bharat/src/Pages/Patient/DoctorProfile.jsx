@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Navbar from '../../Components/Patient/Navbar';
 
 function DoctorProfile() {
@@ -85,9 +85,9 @@ function DoctorProfile() {
               {/* Booking Section */}
               <div className="mt-6">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">Book Appointment</h3>
-                <button className="bg-indigo-900 text-white px-4 py-2 rounded-md hover:bg-indigo-800 transition-colors">
+                <Link to={`/patient/booking/${id}`} className="bg-indigo-900 text-white px-4 py-2 rounded-md hover:bg-indigo-800 transition-colors">
                   Book Appointment
-                </button>
+                </Link>
               </div>
             </div>
           </div>

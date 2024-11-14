@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../../Components/Patient/Navbar';
 import Sidebar from '../../Components/Admin/Sidebar';
+import axios from 'axios';
 
 export default function AdminDoctorApproval() {
     const [appointments, setAppointments] = useState([]);
@@ -13,41 +14,26 @@ export default function AdminDoctorApproval() {
 
     const navigate = useNavigate();
 
-    const sampleAppointments = [
-        {
-            "_id": "1",  // Added _id for appointment for uniqueness
-            "fullName": "Dr. Sarah Thompson",
-            "dateOfBirth": "1980-05-14",
-            "medicalDegrees": ["MBBS", "MD"],
-            "specializations": ["Cardiology", "Internal Medicine"],
-            "profilePicture": "/uploads/profilePic123.png",
-            "verified": true,
-        },
-        {
-            "_id": "2",  // Added _id for appointment for uniqueness
-            "fullName": "Dr. John Doe",
-            "dateOfBirth": "1975-09-23",
-            "medicalDegrees": ["MBBS", "DM"],
-            "specializations": ["Neurology"],
-            "profilePicture": "/uploads/profilePic456.png",
-            "verified": false,
-        },
-    ];
-
+    // Fetch doctors from the backend API
     useEffect(() => {
-        setLoading(true);
-        try {
-            setAppointments(sampleAppointments);
-            setFilteredAppointments(sampleAppointments);
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
+        const fetchDoctors = async () => {
+            setLoading(true);
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND}/api/getdoctors`);
+                setAppointments(response.data); // Set the fetched doctors
+                setFilteredAppointments(response.data); // Set filtered appointments
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchDoctors();
     }, []);
 
     const handleFilter = () => {
-        let filtered = appointments;
+        let filtered = [...appointments];
 
         // Filter by verified status
         if (statusFilter === 'verified') {
@@ -56,7 +42,7 @@ export default function AdminDoctorApproval() {
             filtered = filtered.filter(appointment => appointment.verified === false);
         }
 
-        // Filter by search term
+        // Filter by search term (name)
         if (searchTerm) {
             filtered = filtered.filter(appointment =>
                 appointment.fullName.toLowerCase().includes(searchTerm.toLowerCase())
@@ -66,12 +52,13 @@ export default function AdminDoctorApproval() {
         setFilteredAppointments(filtered);
     };
 
+    // Trigger the filter whenever statusFilter or searchTerm changes
     useEffect(() => {
         handleFilter();
-    }, [statusFilter, searchTerm]);
+    }, [statusFilter, searchTerm, appointments]); // Added appointments to dependencies
 
     const handleViewDetails = (id) => {
-        navigate(`/doctor/appointmentdetails/${id}`);
+        navigate(`/admin/doctordetails/${id}`);
     };
 
     if (loading) return <p className="text-white">Loading appointments...</p>;
@@ -106,7 +93,7 @@ export default function AdminDoctorApproval() {
                             >
                                 All Doctors
                             </button>
-                            <button
+                            {/* <button
                                 onClick={() => setStatusFilter('verified')}
                                 className={`px-4 sm:px-6 py-2 rounded ${statusFilter === 'verified' ? 'bg-[#189AB4] text-black' : 'bg-[#F0F4F8] border-[#7B6E58] text-[#0d6270] border'}`}
                             >
@@ -117,7 +104,7 @@ export default function AdminDoctorApproval() {
                                 className={`px-4 sm:px-6 py-2 rounded ${statusFilter === 'unverified' ? 'bg-[#189AB4] text-black' : 'bg-[#F0F4F8] border-[#7B6E58] text-[#0d6270] border'}`}
                             >
                                 Unverified Doctors
-                            </button>
+                            </button> */}
                         </div>
 
                         {/* Table for Doctors */}
@@ -129,7 +116,7 @@ export default function AdminDoctorApproval() {
                                         <th className="px-6 py-4 text-left">Doctor</th>
                                         <th className="px-6 py-4 text-left">Degrees</th>
                                         <th className="px-6 py-4 text-left">Specializations</th>
-                                        <th className="px-6 py-4 text-left">Verified</th>
+                                        {/* <th className="px-6 py-4 text-left">Verified</th> */}
                                         <th className="px-6 py-4 text-left">Actions</th>
                                     </tr>
                                 </thead>
@@ -141,21 +128,22 @@ export default function AdminDoctorApproval() {
                                                     <img src={appointment.profilePicture} alt={appointment.fullName} className="w-12 h-12 rounded-full" />
                                                 </td>
                                                 <td className="px-6 py-4">{appointment.fullName}</td>
-                                                <td className="px-6 py-4">{appointment.medicalDegrees.join(', ')}</td>
-                                                <td className="px-6 py-4">{appointment.specializations.join(', ')}</td>
-                                                <td className="px-6 py-4">{appointment.verified ? 'Verified' : 'Unverified'}</td>
+                                                <td className="px-6 py-4">{appointment.medicalDegrees}</td>
+                                                <td className="px-6 py-4">{appointment.specializations}</td>
+                                                {/* <td className="px-6 py-4">{appointment.verified == true ? 'Verified' : 'Unverified'}</td> */}
                                                 <td className="px-6 py-4">
-                                                    <Link to={`/admin/doctordetails/${appointment._id}`} className="text-[#189AB4] hover:text-[#0a4c59] ml-2">
+                                                    <button
+                                                        onClick={() => handleViewDetails(appointment._id)}
+                                                        className="text-blue-500 hover:text-blue-700"
+                                                    >
                                                         View Details
-                                                    </Link>
+                                                    </button>
                                                 </td>
                                             </tr>
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="6" className="px-6 py-4 text-center text-gray-500">
-                                                No doctors found.
-                                            </td>
+                                            <td colSpan="6" className="px-6 py-4 text-center">No doctors found</td>
                                         </tr>
                                     )}
                                 </tbody>

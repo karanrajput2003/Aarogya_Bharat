@@ -66,10 +66,10 @@ function Navbar() {
             Appointments
           </Link>
           <Link
-            to="/doctor"
-            className="text-sm font-medium hover:underline underline-offset-4"
+            to="/doctor/addslots"
+            className="text-sm font-medium hover:underline"
           >
-            Contact
+            Add Slots
           </Link>
           <Link
             to="/doctor/profile"
@@ -107,10 +107,10 @@ function Navbar() {
               </li>
               <li>
                 <Link
-                  to="/doctor/"
+                  to="/doctor/addslots"
                   className="text-sm font-medium hover:underline"
                 >
-                  About
+                  Add Slots
                 </Link>
               </li>
               <li>
