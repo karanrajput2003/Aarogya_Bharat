@@ -25,7 +25,7 @@ function DoctorAddSlots() {
 
   const submitSlots = async () => {
     try {
-      await axios.post(`${import.meta.env.VITE_BACKEND}/create-order`, { doctorId, date, startTime, endTime, breaks });
+      await axios.post(`${import.meta.env.VITE_BACKEND}/api/doctor/addSlots`, { doctorId, date, startTime, endTime, breaks });
       alert("Slots added successfully!");
       setDate("");
       setStartTime("");
