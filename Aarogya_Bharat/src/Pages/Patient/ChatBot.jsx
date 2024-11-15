@@ -75,7 +75,7 @@ export default function ProfessionalChatbot() {
     try {
       const res = await axios.get("http://localhost:8000/api/question", {
         params: {
-          question: "(give text response without * ** ``` bullet points)" + userResponse + ".Just return the answer and nothing filler only four line answer.",
+          question: userResponse + ".Just return the answer and nothing filler only four line answer." + "give text response without * ** ``` bullet points",
         },
       });
 

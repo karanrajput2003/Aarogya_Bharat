@@ -11,8 +11,8 @@ const doctorInfo = {
   specialty: "Cardiologist",
   avatar: "/placeholder.svg?height=128&width=128",
   appointments: 8,
-  patients: 120,
-  revenue: 15000,
+  patients: 11,
+  revenue: 11000,
 };
 
 const appointmentData = [
@@ -26,10 +26,8 @@ const appointmentData = [
 ];
 
 const recentPatients = [
-  { name: "", date: "2023-05-15", time: "10:00 AM", status: "Completed" },
-  { name: "Jane Smith", date: "2023-05-16", time: "11:30 AM", status: "Scheduled" },
-  { name: "Bob Johnson", date: "2023-05-16", time: "2:00 PM", status: "Scheduled" },
-  { name: "Alice Brown", date: "2023-05-17", time: "9:30 AM", status: "Scheduled" },
+  { name: "Karan Rajput", date: "2023-11-16", time: "9:00 AM", status: "Scheduled" },
+  { name: "Pritesh Singh", date: "2023-11-16", time: "9:30 AM", status: "Unscheduled" }
 ];
 
 export default function DoctorDashboard() {
@@ -43,7 +41,7 @@ export default function DoctorDashboard() {
             {[
               { label: 'Total Appointments', value: doctorInfo.appointments, extraText: 'Today' },
               { label: 'Total Patients', value: doctorInfo.patients, extraText: '+2 from last month' },
-              { label: 'Total Revenue', value: `$${doctorInfo.revenue}`, extraText: '+10% from last month' },
+              { label: 'Total Revenue', value: `Rs. ${doctorInfo.revenue}`, extraText: '+10% from last month' },
               { label: 'Patient Satisfaction', value: '95%', extraText: 'Excellent', progress: 95 },
             ].map((item, index) => (
               <div key={index} className="bg-white/10 backdrop-blur-md text-white rounded-lg shadow-lg p-6">
