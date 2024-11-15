@@ -38,9 +38,9 @@ const FindDoctor = () => {
             Find Your Doctor
           </h1>
 
-          <p className="mt-4 max-w-[700px] text-white md:text-xl text-center mx-auto">
+          {/* <p className="mt-4 max-w-[700px] text-white md:text-xl text-center mx-auto">
             Filter by specialization to find the best healthcare provider for your needs.
-          </p>
+          </p> */}
 
           {/* Filter Dropdown */}
           <div className="flex flex-col md:flex-row justify-center mt-6">
@@ -64,16 +64,16 @@ const FindDoctor = () => {
           {/* Doctor Cards */}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {filteredDoctors.map((doctor) => (
-              <div key={doctor._id} className="w-full max-w-2xl bg-white/10 backdrop-blur-md border-none text-white rounded-lg shadow-lg p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+              <div key={doctor._id} className="w-full max-w-2xl bg-white/80 backdrop-blur-md border-none text-white rounded-lg shadow-lg p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
                 <div className="flex flex-col items-center">
                   <img
                     src={doctor.profilePicture}
                     alt={doctor.fullName}
                     className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-[#0d6270]"
                   />
-                  <h2 className="text-lg md:text-xl font-semibold mt-4">{doctor.fullName}</h2>
-                  <p className="text-gray-500">{doctor.specializations}</p>
-                  <p className="mt-2 text-gray-700 text-sm md:text-base">{doctor.medicalDegrees}</p>
+                  <h2 className="text-black text-lg md:text-xl font-semibold mt-4">{doctor.fullName}</h2>
+                  <p className="text-gray-700">{doctor.specializations}</p>
+                  <p className="mt-2 text-gray-900 text-sm md:text-base">{doctor.medicalDegrees}</p>
                   <Link to={`/patient/doctor/${doctor._id}`} className="mt-4 transition bg-teal-500 hover:bg-teal-600 text-white rounded p-2">
                     Book Appointment
                   </Link>
@@ -82,6 +82,8 @@ const FindDoctor = () => {
             ))}
           </div>
         </div>
+        <br />
+        <br />
       </section>
     </>
   );

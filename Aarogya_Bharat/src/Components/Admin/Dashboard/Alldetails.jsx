@@ -17,7 +17,7 @@ function Alldetails() {
                 <h3 className="text-sm font-medium text-gray-500">Total Appointments</h3>
                 <FaCalendarCheck className="h-4 w-4 text-blue-400" />
               </div>
-              <div className="mt-2 text-2xl font-bold text-gray-900">1,234</div>
+              <div className="mt-2 text-2xl font-bold text-gray-900">2</div>
               <p className="mt-1 text-xs text-gray-500">+20.1% from last month</p>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-sm">
@@ -25,7 +25,7 @@ function Alldetails() {
                 <h3 className="text-sm font-medium text-gray-500">Total Revenue</h3>
                 <FaDollarSign className="h-4 w-4 text-green-400" />
               </div>
-              <div className="mt-2 text-2xl font-bold text-gray-900">$54,321</div>
+              <div className="mt-2 text-2xl font-bold text-gray-900">Rs. 800</div>
               <p className="mt-1 text-xs text-gray-500">+15.2% from last month</p>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-sm">
@@ -33,17 +33,17 @@ function Alldetails() {
                 <h3 className="text-sm font-medium text-gray-500">Active Patients</h3>
                 <AiOutlineMedicineBox className="h-4 w-4 text-yellow-400" />
               </div>
-              <div className="mt-2 text-2xl font-bold text-gray-900">3,456</div>
+              <div className="mt-2 text-2xl font-bold text-gray-900">11</div>
               <p className="mt-1 text-xs text-gray-500">+5.2% from last month</p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm">
+            {/* <div className="bg-white p-6 rounded-lg shadow-sm">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-medium text-gray-500">Inventory Items</h3>
                 <FaClipboardList className="h-4 w-4 text-purple-400" />
               </div>
               <div className="mt-2 text-2xl font-bold text-gray-900">789</div>
               <p className="mt-1 text-xs text-gray-500">+2.5% from last month</p>
-            </div>
+            </div> */}
           </div>
   )
 }

@@ -14,7 +14,7 @@ function DoctorProfile() {
         const data = await response.json();
         setDoctor(data);
       } catch (error) {
-        console.error("Error fetching doctor data:", error);
+        console.error('Error fetching doctor data:', error);
       }
     };
 
@@ -64,9 +64,15 @@ function DoctorProfile() {
                 <p className="text-gray-700">{doctor.specialSkills}</p>
                 <p className="text-gray-700 mt-4">{doctor.workHistory}</p>
                 <div className="flex items-center space-x-2 mt-4">
-                  {/* Stars */}
-                  <div className="flex">{renderStars(4.8)}</div>
-                  <p className="text-gray-500 text-sm">(0 reviews)</p>
+                  <span
+                    className={`px-3 py-1 text-sm font-semibold rounded-full ${
+                      doctor.verified
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
+                  >
+                    {doctor.verified ? 'Verified' : 'Unverified'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -85,7 +91,10 @@ function DoctorProfile() {
               {/* Booking Section */}
               <div className="mt-6">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">Book Appointment</h3>
-                <Link to={`/patient/booking/${id}`} className="bg-indigo-900 text-white px-4 py-2 rounded-md hover:bg-indigo-800 transition-colors">
+                <Link
+                  to={`/patient/booking/${id}`}
+                  className="bg-indigo-900 text-white px-4 py-2 rounded-md hover:bg-indigo-800 transition-colors"
+                >
                   Book Appointment
                 </Link>
               </div>

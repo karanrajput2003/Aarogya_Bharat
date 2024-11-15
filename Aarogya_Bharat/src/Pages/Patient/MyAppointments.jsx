@@ -107,7 +107,7 @@ function MyAppointments() {
               displayedAppointments.map((appointment) => (
                 <div key={appointment._id} className="rounded-lg border bg-[#F0F4F8] text-[#05445E] shadow-sm">
                   <div className="p-4 md:p-6">
-                    <h3 className="text-lg font-semibold text-[#0d6270]">Doctor id:{appointment.consultationDetails.doctorid}</h3>
+                    <h3 className="text-lg font-semibold text-[#0d6270]">Doctor:{appointment.consultationDetails.doctorid}</h3>
                     <p className="mt-2 text-[#189AB4]">{appointment.specialization}</p>
                     <p className="mt-1 text-[#189AB4]">
                     {new Date(appointment.consultationDetails.preferredDate).toLocaleDateString()} at {appointment.consultationDetails.preferredTime}

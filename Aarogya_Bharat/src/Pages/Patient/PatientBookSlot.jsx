@@ -60,6 +60,7 @@ function PatientBookSlot() {
 
         if (response.data.url) {
           window.open(response.data.url, '_blank');
+          
         } else {
           alert("Registration successful!");
           reset(); // Reset the form after successful submission

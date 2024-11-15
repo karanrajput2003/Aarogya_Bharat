@@ -26,7 +26,7 @@ const appointmentData = [
 ];
 
 const recentPatients = [
-  { name: "John Doe", date: "2023-05-15", time: "10:00 AM", status: "Completed" },
+  { name: "", date: "2023-05-15", time: "10:00 AM", status: "Completed" },
   { name: "Jane Smith", date: "2023-05-16", time: "11:30 AM", status: "Scheduled" },
   { name: "Bob Johnson", date: "2023-05-16", time: "2:00 PM", status: "Scheduled" },
   { name: "Alice Brown", date: "2023-05-17", time: "9:30 AM", status: "Scheduled" },

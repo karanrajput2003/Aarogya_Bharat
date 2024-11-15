@@ -184,7 +184,7 @@ app.post('/api/doctor/register', async (req, res) => {
 
 app.get('/api/getdoctors', async (req, res) => {
   try {
-    const doctors = await Doctor.find({}, 'profilePicture fullName specializations medicalDegrees');
+    const doctors = await Doctor.find();
     res.json(doctors);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -402,7 +402,7 @@ This is an automated email. Please do not reply to this message directly.`,
         policyNumber,
       },
       consultationDetails: {
-        doctorId,
+        doctorid: doctorId,
         preferredDate: date,
         preferredTime: time,
       },
@@ -685,9 +685,10 @@ app.get('/appointments', async (req, res) => {
       return res.status(400).json({ error: 'Doctor ID is required' });
     }
 
-    const appointments = await Consult.find({ doctorid })
-      .sort({ preferredDateTime: 1 }); // Sorting appointments by date
-      console.log(appointments);
+    // Querying the nested path "consultationDetails.doctorid"
+    const appointments = await Consult.find({ 'consultationDetails.doctorid': doctorid })
+      .sort({ 'consultationDetails.preferredDate': 1 }); // Sort by preferredDate
+
     return res.status(200).json(appointments);
   } catch (err) {
     console.error(err);
@@ -732,7 +733,7 @@ Meeting Link: http://localhost:3030/kdkskdn1q121
 
 Please click on the above link to join the consultation at the scheduled time. Ensure you have a stable internet connection and are ready with any relevant medical records or details for discussion.
 
-If you have any issues joining the meeting or need to reschedule, feel free to contact us at [support email] or call us at [support contact number].
+If you have any issues joining the meeting or need to reschedule, feel free to contact us at hackathonbandra@gmail.com.
 
 We look forward to assisting you with your healthcare needs.
 
@@ -759,7 +760,7 @@ This is an automated email. Please do not reply to this message directly.`,
 app.get('/api/myappointments', async (req, res) => {
   try {
     const { userId } = req.query;  // Get userId from query params
-    const appointments = await Consult.find({ userId });
+    const appointments = await Consult.find({ 'patient.userId': userId });
     res.status(200).json(appointments);  // Return appointments
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
