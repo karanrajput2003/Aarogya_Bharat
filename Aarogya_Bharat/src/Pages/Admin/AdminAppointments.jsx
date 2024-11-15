@@ -2,68 +2,41 @@ import Sidebar from "../../Components/Admin/Sidebar";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const AdminAppointment = () => {
   const [appointments, setAppointments] = useState([]);
   const [filteredAppointments, setFilteredAppointments] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  const dummyAppointments = [
-    {
-      id: "1",
-      patientName: "John Doe",
-      preferredDate: "2024-11-15",
-      preferredTime: "10:00 AM",
-      status: "Scheduled",
-    },
-    {
-      id: "2",
-      patientName: "Jane Smith",
-      preferredDate: "2024-11-16",
-      preferredTime: "02:00 PM",
-      status: "Scheduled",
-    },
-    {
-      id: "3",
-      patientName: "Michael Johnson",
-      preferredDate: "2024-11-17",
-      preferredTime: "11:00 AM",
-      status: "Completed",
-    },
-  ];
-
   useEffect(() => {
-    // Fetch the data (replace with actual API call)
-    setAppointments(dummyAppointments);
-    setFilteredAppointments(dummyAppointments);
+    fetchAppointments();
   }, []);
 
-  const handleSearch = (e) => {
-    const query = e.target.value.toLowerCase();
-    setSearchQuery(query);
-    if (query === '') {
-      setFilteredAppointments(appointments);
-    } else {
-      const filtered = appointments.filter((appointment) =>
-        appointment.patientName.toLowerCase().includes(query)
-      );
-      setFilteredAppointments(filtered);
+  // Fetch appointments from backend API
+  const fetchAppointments = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND}/getappointments`);
+      setAppointments(response.data);
+      setFilteredAppointments(response.data);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
     }
   };
 
-  const handleStatusChange = (id, status) => {
-    // Update status in the backend here
-    setAppointments((prevAppointments) =>
-      prevAppointments.map((appointment) =>
-        appointment.id === id ? { ...appointment, status } : appointment
-      )
-    );
-  };
-
-  const handleViewDetails = (id) => {
-    // Redirect to detailed appointment page
-    navigate(`/appointment/${id}`);
+  // Search function
+  const handleSearch = (e) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+    if (query === "") {
+      setFilteredAppointments(appointments);
+    } else {
+      const filtered = appointments.filter((appointment) =>
+        appointment.patient.name.toLowerCase().includes(query)
+      );
+      setFilteredAppointments(filtered);
+    }
   };
 
   return (
@@ -116,15 +89,15 @@ const AdminAppointment = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredAppointments.length > 0 ? (
                     filteredAppointments.map((appointment) => (
-                      <tr key={appointment.id}>
+                      <tr key={appointment._id}>
                         <td className="px-6 py-4 text-sm text-gray-900">
-                          {appointment.patientName}
+                          {appointment.patient.name}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-900">
-                          {appointment.preferredDate}
+                          {new Date(appointment.consultationDetails.preferredDate).toLocaleDateString()}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-900">
-                          {appointment.preferredTime}
+                          {appointment.consultationDetails.preferredTime}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-900">
                           {appointment.status === "Scheduled" ? (
@@ -137,7 +110,7 @@ const AdminAppointment = () => {
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-900 flex space-x-4">
                           <Link
-                            to={`/admin/appointmentrdetails/${appointment.id}`}
+                            to={`/admin/appointmentrdetails/${appointment._id}`}
                             className="text-[#189AB4] hover:text-[#0a4c59] ml-2"
                           >
                             View Details

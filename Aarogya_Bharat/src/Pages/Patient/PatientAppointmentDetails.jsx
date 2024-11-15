@@ -8,9 +8,9 @@ import {
   CheckCircle,
   FileText,
 } from "lucide-react";
-import Sidebar from "../../Components/Admin/Sidebar";
+import Navbar from "../../Components/Doctor/Navbar";
 
-const AdminAppointmentDetails = () => {
+const PatientAppointmentDetails = () => {
   const { id } = useParams(); // Get the appointment ID from the URL
   const [consultationData, setConsultationData] = useState(null); // State to hold the fetched data
   const [loading, setLoading] = useState(true); // Loading state
@@ -52,20 +52,20 @@ const AdminAppointmentDetails = () => {
   }
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      <Sidebar />
-
-      {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
+    <>
+    <Navbar />
+    <main className="flex-1 overflow-y-auto bg-gradient-to-b from-[#073243] via-[#0a4c59] to-[#0d6270]">
         <div className="container mx-auto px-4 py-8">
+        <div className="mb-8 md:mb-10 lg:mb-12">
+            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem] text-white text-center">
+            Patient and Consultation Details
+              </h1>
+          </div>
           <div className="bg-white shadow-lg rounded-lg overflow-hidden">
             <div className="p-8">
               <h1 className="text-3xl font-bold text-gray-900">
                 Virtual Consultation Booking
               </h1>
-              <p className="mt-2 text-gray-600">
-                Patient and consultation details.
-              </p>
             </div>
 
             <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
@@ -157,7 +157,7 @@ const AdminAppointmentDetails = () => {
                 </div>
                 <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt className="text-sm font-medium text-gray-500">
-                    Additional Notes
+                  Prescription
                   </dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                     {consultationData.additionalNotes || "None"}
@@ -172,7 +172,7 @@ const AdminAppointmentDetails = () => {
                     {consultationData.status === "Completed" && (
                       <span className="text-blue-500">{consultationData.status}</span>
                     )}
-                    {consultationData.status === "Cancelled" && (
+                    {consultationData.status === "Unscheduled" && (
                       <span className="text-red-500">{consultationData.status}</span>
                     )}
                   </dd>
@@ -182,8 +182,8 @@ const AdminAppointmentDetails = () => {
           </div>
         </div>
       </main>
-    </div>
+    </>
   );
 };
 
-export default AdminAppointmentDetails;
+export default PatientAppointmentDetails;

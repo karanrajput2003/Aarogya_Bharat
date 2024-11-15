@@ -14,6 +14,7 @@ import DoctorHome from './Pages/Doctor/Home.jsx';
 import DoctorProfilePage from './Pages/Doctor/DoctorProfile.jsx';
 import DoctorUpdateProfile from './Pages/Doctor/DoctorUpdateProfile.jsx';
 import DoctorDashboard from './Pages/Doctor/DoctorDashboard.jsx';
+import DoctorAppointmentDetails from './Pages/Doctor/DoctorAppointmentDetails.jsx'
 // Patient
 import PatientHome from './Pages/Patient/PatientHome.jsx';
 import FindDoctor from './Pages/Patient/FindDoctor.jsx';
@@ -37,6 +38,7 @@ import AdminInventory from './Pages/Admin/AdminInventory.jsx';
 import AdminSetting from './Pages/Admin/AdminSetting.jsx';
 import PatientBookSlot from './Pages/Patient/PatientBookSlot.jsx';
 import DoctorAddSlots from './Pages/Doctor/DoctorAddSlots.jsx';
+import PatientAppointmentDetails from './Pages/Patient/PatientAppointmentDetails.jsx';
 
 // Create the router
 const router = createBrowserRouter([
@@ -85,6 +87,10 @@ const router = createBrowserRouter([
     element: <DoctorAddSlots />,
   },
   {
+    path: 'doctor/appointmentdetails/:id',
+    element: <DoctorAppointmentDetails />,
+  },
+  {
     path: '/patient',
     element: <PatientHome />,
   },
@@ -111,6 +117,14 @@ const router = createBrowserRouter([
   {
     path: '/patient/documents',
     element: <PatientUploadedRecords />,
+  },
+  {
+    path: '/patient/booking/:id',
+    element: <PatientBookSlot />,
+  },
+  {
+    path: '/patient/appointmentdetails/:id',
+    element: <PatientAppointmentDetails />,
   },
   {
     path: '/admin',

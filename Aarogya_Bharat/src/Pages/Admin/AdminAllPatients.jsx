@@ -1,43 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Sidebar from '../../Components/Admin/Sidebar';
-import { Search } from 'lucide-react'
+import { Search } from 'lucide-react';
 
 export default function AdminAllPatients() {
-    const [appointments, setAppointments] = useState([]);
-    const [filteredAppointments, setFilteredAppointments] = useState([]);
+    const [patients, setPatients] = useState([]);
+    const [filteredPatients, setFilteredPatients] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState(""); // State for search term
 
-    // Sample doctor data for telehealth
-    const sampleAppointments = [
-        {
-            "_id": "1",  // Added _id for appointment for uniqueness
-            "fullName": "Sarah Thompson",
-            "dateOfBirth": "1980-05-14",
-            "phoneno": 9384848944,
-            "feedback": "Nidldl",
-            "profilePicture": "/uploads/profilePic123.png",
-            "verified": true,
-        },
-        {
-            "_id": "2",  // Added _id for appointment for uniqueness
-            "fullName": "John Doe",
-            "dateOfBirth": "1975-09-23",
-            "phoneno": 9911272638,
-            "feedback": "hjc ioscnjn",
-            "profilePicture": "/uploads/profilePic456.png",
-            "verified": false,
-        },
-    ];
-
     useEffect(() => {
         setLoading(true);
         try {
-            // Use sample data directly instead of fetching from API
-            setAppointments(sampleAppointments);
-            setFilteredAppointments(sampleAppointments);
+            // Fetch patients from the backend API
+            const fetchPatients = async () => {
+                const response = await fetch(`${import.meta.env.VITE_BACKEND}/api/patients`);
+                const data = await response.json();
+                setPatients(data); // Set the fetched data
+                setFilteredPatients(data); // Initially, set all data to filtered
+            };
+            fetchPatients();
         } catch (err) {
             setError(err.message);
         } finally {
@@ -45,18 +28,18 @@ export default function AdminAllPatients() {
         }
     }, []);
 
-    // Filter appointments based on search term
+    // Filter patients based on search term
     useEffect(() => {
         if (searchTerm) {
-            const filtered = appointments.filter(appointment =>
-                appointment.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                appointment.phoneno.toString().includes(searchTerm) // Add more fields if necessary
+            const filtered = patients.filter(patient =>
+                patient.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                patient.phoneno.toString().includes(searchTerm) // Search by name or phone number
             );
-            setFilteredAppointments(filtered);
+            setFilteredPatients(filtered);
         } else {
-            setFilteredAppointments(appointments);
+            setFilteredPatients(patients);
         }
-    }, [searchTerm, appointments]);
+    }, [searchTerm, patients]);
 
     return (
         <div className="flex h-screen bg-gray-100">
@@ -73,7 +56,6 @@ export default function AdminAllPatients() {
                         </div>
 
                         {/* Search Input */}
-                        
                         <div className="mb-6">
                             <input
                                 type="text"
@@ -84,42 +66,47 @@ export default function AdminAllPatients() {
                             />
                         </div>
 
-                        {/* Table for Doctors */}
+                        {/* Table for Patients */}
                         <div className="overflow-x-auto text-black shadow-lg rounded-lg">
                             <table className="min-w-full table-auto text-sm">
                                 <thead>
                                     <tr className="bg-white/30">
                                         <th className="px-6 py-4 text-left">Profile Picture</th>
-                                        <th className="px-6 py-4 text-left">Patient</th>
+                                        <th className="px-6 py-4 text-left">Patient Id</th>
+                                        <th className="px-6 py-4 text-left">Patient Name</th>
+                                        <th className="px-6 py-4 text-left">Aadhar No</th>
                                         <th className="px-6 py-4 text-left">Phone No</th>
-                                        <th className="px-6 py-4 text-left">Feedback</th>
-                                        <th className="px-6 py-4 text-left">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filteredAppointments.length > 0 ? (
-                                        filteredAppointments.map((appointment) => (
-                                            <tr key={appointment._id} className="border-b bg-white hover:bg-white">
+                                    {loading ? (
+                                        <tr>
+                                            <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                                                Loading patients...
+                                            </td>
+                                        </tr>
+                                    ) : error ? (
+                                        <tr>
+                                            <td colSpan="5" className="px-6 py-4 text-center text-red-500">
+                                                Error: {error}
+                                            </td>
+                                        </tr>
+                                    ) : filteredPatients.length > 0 ? (
+                                        filteredPatients.map((patient) => (
+                                            <tr key={patient._id} className="border-b bg-white hover:bg-white">
                                                 <td className="px-6 py-4">
-                                                    <img src={appointment.profilePicture} alt={appointment.fullName} className="w-12 h-12 rounded-full" />
+                                                    <img src={patient.profilePicture || "/default-profile.png"} alt={patient.username} className="w-12 h-12 rounded-full" />
                                                 </td>
-                                                <td className="px-6 py-4">{appointment.fullName}</td>
-                                                <td className="px-6 py-4">{appointment.phoneno}</td>
-                                                <td className="px-6 py-4">{appointment.feedback}</td>
-                                                <td className="px-6 py-4">
-                                                    <Link
-                                                        to={`/admin/doctordetails/${appointment._id}`}
-                                                        className="text-[#189AB4] hover:text-[#0a4c59] ml-2"
-                                                    >
-                                                        View Details
-                                                    </Link>
-                                                </td>
+                                                <td className="px-6 py-4">{patient._id}</td>
+                                                <td className="px-6 py-4">{patient.username}</td>
+                                                <td className="px-6 py-4">{patient.aadhar_no}</td>
+                                                <td className="px-6 py-4">{patient.phoneno}</td>
                                             </tr>
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="6" className="px-6 py-4 text-center text-gray-500">
-                                                No appointments found.
+                                            <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                                                No patients found.
                                             </td>
                                         </tr>
                                     )}

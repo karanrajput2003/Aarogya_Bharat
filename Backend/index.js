@@ -343,7 +343,6 @@ const failureUrl = "http://localhost:5173/payment-failure";
 
 // Create Order Route
 app.post('/create-order', async (req, res) => {
-  console.log(req.body);
   const { doctorId, date, time, userId } = req.body;
   const orderId = uuidv4();
 
@@ -355,11 +354,13 @@ app.post('/create-order', async (req, res) => {
       email: req.body.email,
       medicalHistory: req.body.medicalHistory,
       symptoms: req.body.symptoms,
+    },
+    insuranceDetails: {
       insuranceProvider: req.body.insuranceProvider,
       policyNumber: req.body.policyNumber,
     },
     consultationDetails: {
-      doctorId,
+      doctorid: doctorId,
       preferredDate: date,
       preferredTime: time,
     },
@@ -373,11 +374,11 @@ app.post('/create-order', async (req, res) => {
     merchantId: MERCHANT_ID,
     merchantUserId: userId,
     mobileNumber: 1212121212,
-    amount: 400*100,
+    amount: 400 * 100, // amount in paise (100 paise = 1 INR)
     merchantTransactionId: orderId,
     redirectUrl: `${redirectUrl}/?id=${orderId}`,
     redirectMode: 'POST',
-    paymentInstrument: { type: 'PAY_PAGE' }
+    paymentInstrument: { type: 'PAY_PAGE' },
   };
 
   const payload = Buffer.from(JSON.stringify(paymentPayload)).toString('base64');
@@ -392,23 +393,23 @@ app.post('/create-order', async (req, res) => {
     headers: {
       accept: 'application/json',
       'Content-Type': 'application/json',
-      'X-VERIFY': checksum
+      'X-VERIFY': checksum,
     },
-    data: { request: payload }
+    data: { request: payload },
   };
 
   try {
     const slots = await Slot.findOne({ doctorId, date });
 
     if (!slots) {
-      return res.status(404).json({ message: "No slots found for this doctor on this date." });
+      return res.status(404).json({ message: 'No slots found for this doctor on this date.' });
     }
 
     // Check if the selected slot is available
     const slot = slots.times.find(slot => slot.time === time && !slot.isBooked);
 
     if (!slot) {
-      return res.status(400).json({ message: "This slot is either taken or invalid." });
+      return res.status(400).json({ message: 'This slot is either taken or invalid.' });
     }
 
     // Update the slot to reflect booking
@@ -427,10 +428,10 @@ app.post('/create-order', async (req, res) => {
     // Assuming the PhonePe API returns a redirect URL in the response data
     const redirectUrl = paymentResponse.data.data.instrumentResponse.redirectInfo.url;
 
-    res.status(200).json({ msg: "OK", url: redirectUrl });
-
+    // Send redirect URL back to client
+    res.status(200).json({ msg: 'OK', url: redirectUrl });
   } catch (error) {
-    console.error("Error in payment:", error);
+    console.error('Error in payment:', error);
     res.status(500).json({ error: 'Failed to initiate payment' });
   }
 });
@@ -529,5 +530,153 @@ app.post("/api/doctor/bookSlot", async (req, res) => {
   } catch (error) {
     console.error("Error booking slot:", error);
     res.status(500).json({ message: "Error booking slot" });
+  }
+});
+
+
+// Get all appointments
+app.get("/getappointments", async (req, res) => {
+  try {
+    const consultations = await Consult.find();
+    res.status(200).json(consultations);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching appointments", error });
+  }
+});
+
+// Get appointment Details By id
+app.get("/api/appointments/:id", async (req, res) => {
+  try {
+    const appointment = await Consult.findById(req.params.id);
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+    res.json(appointment);
+  } catch (error) {
+    console.error("Error fetching appointment:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Route to get all payments
+app.get("/api/getpayments", async (req, res) => {
+  try {
+    // Retrieve all time slots that have been booked (where userId is not null)
+    const payments = await Slot.aggregate([
+      { $unwind: "$times" }, // Unwind the times array to treat each time slot as a separate document
+      { $match: { "times.userId": { $ne: null } } }, // Filter booked slots
+      {
+        $project: {
+          _id: 0,
+          id: "$_id",
+          doctorId: 1,
+          patientName: "$times.userId", // Assuming `userId` corresponds to a patient's ID or name; modify as needed
+          amount: "$times.amount",
+          paymentDate: "$times.createdAt",
+          status: "$times.status",
+          transactionId: "$times.merchantTransactionId",
+        },
+      },
+    ]);
+
+    res.json(payments);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch payments" });
+  }
+});
+
+// API to fetch all patients
+app.get('/api/patients', async (req, res) => {
+  try {
+    const patients = await User.find(); // Select the required fields
+    res.json(patients);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+// API to fetch recent appointments
+app.get('/api/recent-appointments', async (req, res) => {
+  try {
+    const appointments = await Consult.find()
+      .sort({ createdAt: -1 }) // Sort by creation date (most recent first)
+      .limit(5) // Limit to 5 appointments
+      .populate('patient.userId', 'name email phone')  // Populate patient info
+      .populate('consultationDetails.doctorid', 'name')  // Populate doctor info
+      .select('patient consultationDetails status createdAt') // Select relevant fields
+
+    // Format the response to return only necessary fields
+    const formattedAppointments = appointments.map(appointment => ({
+      patientName: appointment.patient.name,
+      doctorName: appointment.consultationDetails.doctorid,
+      preferredDate: appointment.consultationDetails.preferredDate,
+      preferredTime: appointment.consultationDetails.preferredTime,
+      status: appointment.status,
+      _id: appointment._id,
+      createdAt: appointment.createdAt,
+    }));
+    res.json(formattedAppointments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+// Endpoint to fetch top 5 doctors
+app.get('/api/topdoctors', async (req, res) => {
+  try {
+    const doctors = await Doctor.find().limit(5);
+    res.json(doctors);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
+// Fetch appointments based on doctorid
+app.get('/appointments', async (req, res) => {
+  try {
+    const { doctorid } = req.query;
+
+    if (!doctorid) {
+      return res.status(400).json({ error: 'Doctor ID is required' });
+    }
+
+    const appointments = await Consult.find({ doctorid })
+      .sort({ preferredDateTime: 1 }); // Sorting appointments by date
+      console.log(appointments);
+    return res.status(200).json(appointments);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Failed to fetch appointments' });
+  }
+});
+
+app.put('/appointments/:id/schedule', async (req, res) => {
+  try {
+    const appointment = await Consult.findById(req.params.id);
+
+    if (!appointment) {
+      return res.status(404).json({ message: 'Appointment not found' });
+    }
+
+    appointment.status = 'Scheduled';
+    await appointment.save();
+
+    res.status(200).json({ message: 'Appointment scheduled successfully', appointment });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
+// Backend route to fetch appointments by userId
+app.get('/api/myappointments', async (req, res) => {
+  try {
+    const { userId } = req.query;  // Get userId from query params
+    const appointments = await Consult.find({ userId });
+    res.status(200).json(appointments);  // Return appointments
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 });

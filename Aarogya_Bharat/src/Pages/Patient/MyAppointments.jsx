@@ -1,72 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../Components/Patient/Navbar';
+import { useSelector } from 'react-redux';
+import axios from 'axios';  // You need axios to make HTTP requests
 
 function MyAppointments() {
   const [appointments, setAppointments] = useState([]);
   const [filteredAppointments, setFilteredAppointments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [statusFilter, setStatusFilter] = useState('');
-  const [view, setView] = useState('upcoming'); // 'upcoming', 'completed', or 'unapproved'
-
+  const [statusFilter, setStatusFilter] = useState(''); // Scheduled, Completed, Unscheduled
+  const [view, setView] = useState('scheduled'); // scheduled, completed, unscheduled
+  const userId = useSelector((state) => state.auth.userId); // Get user ID from Redux
   const navigate = useNavigate();
-
-  // Sample appointment data for telehealth
-  const sampleAppointments = [
-    {
-      _id: '1',
-      doctor: 'Dr. John Smith',
-      specialization: 'Cardiologist',
-      date: '2024-10-20T10:30:00',
-      status: 'Upcoming Teleconsultation',
-    },
-    {
-      _id: '2',
-      doctor: 'Dr. Jane Doe',
-      specialization: 'Dermatologist',
-      date: '2024-10-15T14:00:00',
-      status: 'Completed (Telehealth)',
-    },
-    {
-      _id: '3',
-      doctor: 'Dr. Emily White',
-      specialization: 'Pediatrician',
-      date: '2024-10-18T09:00:00',
-      status: 'Upcoming Teleconsultation',
-    },
-    {
-      _id: '4',
-      doctor: 'Dr. Alan Brown',
-      specialization: 'General Practitioner',
-      date: '2024-10-22T11:00:00',
-      status: 'Unapproved',
-    },
-    {
-      _id: '5',
-      doctor: 'Dr. Mary Johnson',
-      specialization: 'Orthopedist',
-      date: '2024-10-12T16:00:00',
-      status: 'Completed (Telehealth)',
-    },
-  ];
 
   useEffect(() => {
     setLoading(true);
-    try {
-      // Use sample data directly instead of fetching from API
-      setAppointments(sampleAppointments);
-      setFilteredAppointments(sampleAppointments);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    const fetchAppointments = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND}/api/myappointments?userId=${userId}`);  // Fetch from backend
+        console.log(response)
+        setAppointments(response.data); // Set appointments from backend response
+        setFilteredAppointments(response.data); // Initially show all appointments
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAppointments();
+  }, [userId]);
 
   const handleFilter = () => {
     let filtered = appointments;
 
+    // Filter by status
     if (statusFilter) {
       filtered = filtered.filter(appointment => appointment.status === statusFilter);
     }
@@ -74,18 +43,20 @@ function MyAppointments() {
     setFilteredAppointments(filtered);
   };
 
+  // Current Date to compare for upcoming and completed
   const currentDate = new Date();
 
+  // Filter appointments based on view (scheduled, completed, unscheduled)
   const displayedAppointments = filteredAppointments.filter(appointment =>
-    view === 'upcoming'
-      ? new Date(appointment.date) >= currentDate
+    view === 'scheduled'
+      ? appointment.status === 'Scheduled' // 'Scheduled' appointments
       : view === 'completed'
-      ? new Date(appointment.date) < currentDate && appointment.status.includes('Completed')
-      : appointment.status === 'Unapproved'
+      ? appointment.status === 'Completed' // 'Completed' appointments
+      : appointment.status === 'Unscheduled' // 'Unscheduled' appointments
   );
 
   const handleViewDetails = (id) => {
-    navigate(`/user/appointmentdetails/${id}`);
+    navigate(`/patient/appointmentdetails/${id}`);
   };
 
   if (loading) {
@@ -102,18 +73,18 @@ function MyAppointments() {
       <section className="min-h-screen py-12 md:py-16 lg:py-20 bg-gradient-to-b from-[#073243] via-[#0a4c59] to-[#0d6270]">
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
           <div className="mb-8 md:mb-10 lg:mb-12">
-          <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem] text-white text-center">
-          {view === 'upcoming' ? 'Upcoming Telehealth Appointments' : view === 'completed' ? 'Completed Telehealth Appointments' : 'Unapproved Appointments'}
-          </h1>
+            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem] text-white text-center">
+              {view === 'scheduled' ? 'Scheduled Appointments' : view === 'completed' ? 'Completed Appointments' : 'Unscheduled Appointments'}
+            </h1>
           </div>
 
           {/* Filters */}
           <div className="flex gap-2 mb-8 flex-wrap">
             <button
-              onClick={() => setView('upcoming')}
-              className={`px-4 sm:px-6 py-2 rounded ${view === 'upcoming' ? 'bg-[#189AB4] text-white' : 'bg-[#F0F4F8] border-[#7B6E58] text-[#0d6270] border'}`}
+              onClick={() => setView('scheduled')}
+              className={`px-4 sm:px-6 py-2 rounded ${view === 'scheduled' ? 'bg-[#189AB4] text-white' : 'bg-[#F0F4F8] border-[#7B6E58] text-[#0d6270] border'}`}
             >
-              Upcoming Appointments
+              Scheduled Appointments
             </button>
 
             <button
@@ -124,10 +95,10 @@ function MyAppointments() {
             </button>
 
             <button
-              onClick={() => setView('unapproved')}
-              className={`px-4 sm:px-6 py-2 rounded ${view === 'unapproved' ? 'bg-[#189AB4] text-white' : 'bg-[#F0F4F8] border-[#7B6E58] text-[#0d6270] border'}`}
+              onClick={() => setView('unscheduled')}
+              className={`px-4 sm:px-6 py-2 rounded ${view === 'unscheduled' ? 'bg-[#189AB4] text-white' : 'bg-[#F0F4F8] border-[#7B6E58] text-[#0d6270] border'}`}
             >
-              Unapproved Appointments
+              Unscheduled Appointments
             </button>
           </div>
 
@@ -136,15 +107,15 @@ function MyAppointments() {
               displayedAppointments.map((appointment) => (
                 <div key={appointment._id} className="rounded-lg border bg-[#F0F4F8] text-[#05445E] shadow-sm">
                   <div className="p-4 md:p-6">
-                    <h3 className="text-lg font-semibold text-[#0d6270]">{appointment.doctor}</h3>
+                    <h3 className="text-lg font-semibold text-[#0d6270]">Doctor id:{appointment.consultationDetails.doctorid}</h3>
                     <p className="mt-2 text-[#189AB4]">{appointment.specialization}</p>
                     <p className="mt-1 text-[#189AB4]">
-                      {new Date(appointment.date).toLocaleDateString()} at {new Date(appointment.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    {new Date(appointment.consultationDetails.preferredDate).toLocaleDateString()} at {appointment.consultationDetails.preferredTime}
                     </p>
                     <span className="mt-4 bg-[#75E6DA] px-2 py-1 rounded-md text-xs font-medium text-[#05445E]">
                       {appointment.status}
                     </span>
-                    {appointment.status.includes('Upcoming') && (
+                    {appointment.status === 'Scheduled' && (
                       <button
                         onClick={() => handleViewDetails(appointment._id)}
                         className="mt-4 w-full px-4 py-2 bg-[#0a4c59] text-white rounded hover:bg-[#073243]"

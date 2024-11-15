@@ -63,8 +63,8 @@ const virtualConsultationSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["Scheduled", "Completed", "Cancelled"],
-      default: "Scheduled",
+      enum: ["Scheduled", "Completed", "Cancelled","Unscheduled"],
+      default: "Unscheduled",
     },
     createdAt: {
       type: Date,
