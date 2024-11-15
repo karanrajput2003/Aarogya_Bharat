@@ -5,6 +5,7 @@ const dbConfig = require("./app/config/db.config");
 var bcrypt = require("bcryptjs");
 const moment = require("moment");
 const app = express();
+const nodemailer = require("nodemailer");
 
 const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
@@ -342,97 +343,138 @@ const successUrl = "http://localhost:5173/patient/myappointments";
 const failureUrl = "http://localhost:5173/payment-failure";
 
 // Create Order Route
-app.post('/create-order', async (req, res) => {
-  const { doctorId, date, time, userId } = req.body;
+app.post("/create-order", async (req, res) => {
+  const { doctorId, date, time, userId, email, name, phone, medicalHistory, symptoms, insuranceProvider, policyNumber, consentToConsultation, additionalNotes } = req.body;
+
   const orderId = uuidv4();
 
-  const consultation = new Consult({
-    patient: {
-      userId, 
-      name: req.body.name,
-      phone: req.body.phone,
-      email: req.body.email,
-      medicalHistory: req.body.medicalHistory,
-      symptoms: req.body.symptoms,
-    },
-    insuranceDetails: {
-      insuranceProvider: req.body.insuranceProvider,
-      policyNumber: req.body.policyNumber,
-    },
-    consultationDetails: {
-      doctorid: doctorId,
-      preferredDate: date,
-      preferredTime: time,
-    },
-    consentToConsultation: req.body.consentToConsultation,
-    additionalNotes: req.body.additionalNotes,
-  });
-
-  await consultation.save();
-
-  const paymentPayload = {
-    merchantId: MERCHANT_ID,
-    merchantUserId: userId,
-    mobileNumber: 1212121212,
-    amount: 400 * 100, // amount in paise (100 paise = 1 INR)
-    merchantTransactionId: orderId,
-    redirectUrl: `${redirectUrl}/?id=${orderId}`,
-    redirectMode: 'POST',
-    paymentInstrument: { type: 'PAY_PAGE' },
-  };
-
-  const payload = Buffer.from(JSON.stringify(paymentPayload)).toString('base64');
-  const keyIndex = 1;
-  const string = payload + '/pg/v1/pay' + MERCHANT_KEY;
-  const sha256 = crypto.createHash('sha256').update(string).digest('hex');
-  const checksum = sha256 + '###' + keyIndex;
-
-  const option = {
-    method: 'POST',
-    url: MERCHANT_BASE_URL,
-    headers: {
-      accept: 'application/json',
-      'Content-Type': 'application/json',
-      'X-VERIFY': checksum,
-    },
-    data: { request: payload },
-  };
-
   try {
+    // Transporter setup for nodemailer
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: "hackathonbandra@gmail.com", // Your email address
+        pass: "ipgj baqa uxiq lpsq", // Use an App Password instead of plain password
+      },
+    });
+
+    // Mail options
+    const mailOptions = {
+      from: "hackathonbandra@gmail.com",
+      to: email, // Email from request body
+      subject: "Appointment Booking Confirmation – Aarogya Bharat",
+      text: `Dear ${name},
+
+Thank you for booking an appointment with Aarogya Bharat.
+
+Your appointment request has been successfully submitted and is currently awaiting approval from the doctor. Once the doctor approves your appointment, you will receive a confirmation email with the meeting link for the consultation.
+
+Here are the details of your appointment request:
+
+Doctor's Id: ${doctorId}
+Requested Date & Time: ${date} ${time}
+Mode of Consultation: Video Call
+
+We aim to ensure a seamless experience for you. If you have any questions or need further assistance, feel free to reach out to us at hackathonbandra@gmail.com .
+
+Stay healthy,
+The Aarogya Bharat Team
+
+Note:
+This is an automated email. Please do not reply to this message directly.`,
+    };
+
+    // Send email
+    await transporter.sendMail(mailOptions);
+
+    // Create and save consultation
+    const consultation = new Consult({
+      patient: {
+        userId,
+        name,
+        phone,
+        email,
+        medicalHistory,
+        symptoms,
+      },
+      insuranceDetails: {
+        insuranceProvider,
+        policyNumber,
+      },
+      consultationDetails: {
+        doctorId,
+        preferredDate: date,
+        preferredTime: time,
+      },
+      consentToConsultation,
+      additionalNotes,
+    });
+
+    await consultation.save();
+
+    // Prepare payment payload
+    const paymentPayload = {
+      merchantId: MERCHANT_ID,
+      merchantUserId: userId,
+      mobileNumber: phone,
+      amount: 400 * 100, // Amount in paise
+      merchantTransactionId: orderId,
+      redirectUrl: `${redirectUrl}/?id=${orderId}`,
+      redirectMode: "POST",
+      paymentInstrument: { type: "PAY_PAGE" },
+    };
+
+    const payload = Buffer.from(JSON.stringify(paymentPayload)).toString("base64");
+    const keyIndex = 1;
+    const string = payload + "/pg/v1/pay" + MERCHANT_KEY;
+    const sha256 = crypto.createHash("sha256").update(string).digest("hex");
+    const checksum = sha256 + "###" + keyIndex;
+
+    const option = {
+      method: "POST",
+      url: MERCHANT_BASE_URL,
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+        "X-VERIFY": checksum,
+      },
+      data: { request: payload },
+    };
+
+    // Check and update slot availability
     const slots = await Slot.findOne({ doctorId, date });
 
     if (!slots) {
-      return res.status(404).json({ message: 'No slots found for this doctor on this date.' });
+      return res.status(404).json({ message: "No slots found for this doctor on this date." });
     }
 
-    // Check if the selected slot is available
-    const slot = slots.times.find(slot => slot.time === time && !slot.isBooked);
+    const slot = slots.times.find((slot) => slot.time === time && !slot.isBooked);
 
     if (!slot) {
-      return res.status(400).json({ message: 'This slot is either taken or invalid.' });
+      return res.status(400).json({ message: "This slot is either taken or invalid." });
     }
 
-    // Update the slot to reflect booking
     slot.isBooked = true;
     slot.userId = userId;
-    slot.amount = 100;
+    slot.amount = 400;
     slot.merchantTransactionId = orderId;
-    slot.status = 'SUCCESS';
+    slot.status = "SUCCESS";
 
-    // Save updated slot
     await slots.save();
 
     // Send the payment request to PhonePe API
     const paymentResponse = await axios.request(option);
 
-    // Assuming the PhonePe API returns a redirect URL in the response data
-    const redirectUrl = paymentResponse.data.data.instrumentResponse.redirectInfo.url;
+    const redirectInfo = paymentResponse.data?.data?.instrumentResponse?.redirectInfo;
 
-    // Send redirect URL back to client
-    res.status(200).json({ msg: 'OK', url: redirectUrl });
+    if (!redirectInfo || !redirectInfo.url) {
+      return res.status(500).json({ error: "Invalid response from payment gateway." });
+    }
+
+    res.status(200).json({ msg: "OK", url: redirectInfo.url });
   } catch (error) {
-    console.error('Error in payment:', error);
-    res.status(500).json({ error: 'Failed to initiate payment' });
+    console.error("Error in create-order:", error);
+    res.status(500).json({ error: "Failed to process order." });
   }
 });
 
@@ -657,9 +699,52 @@ app.put('/appointments/:id/schedule', async (req, res) => {
   try {
     const appointment = await Consult.findById(req.params.id);
 
+    const name = appointment.patient.name;
+    const email = appointment.patient.email;
+    const date = appointment.consultationDetails.preferredDate.toLocaleDateString();
+    const time = appointment.consultationDetails.preferredTime;
+    const doctorId = appointment.consultationDetails.doctorid;
     if (!appointment) {
       return res.status(404).json({ message: 'Appointment not found' });
     }
+
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: "hackathonbandra@gmail.com", // Your email address
+        pass: "ipgj baqa uxiq lpsq", // Use an App Password instead of plain password
+      },
+    });
+
+    // Mail options
+    const mailOptions = {
+      from: "hackathonbandra@gmail.com",
+      to: email,
+      subject: "Your Appointment is Confirmed – Aarogya Bharat",
+      text: `Dear ${name},
+
+We are pleased to inform you that your appointment has been approved by Doctor. Below are the confirmed details of your appointment:
+
+Doctor's Id: ${doctorId}
+Date & Time: ${date} at ${time}
+Mode of Consultation: Video Call
+Meeting Link: http://localhost:3030/kdkskdn1q121
+
+Please click on the above link to join the consultation at the scheduled time. Ensure you have a stable internet connection and are ready with any relevant medical records or details for discussion.
+
+If you have any issues joining the meeting or need to reschedule, feel free to contact us at [support email] or call us at [support contact number].
+
+We look forward to assisting you with your healthcare needs.
+
+Stay healthy,
+The Aarogya Bharat Team
+
+Note:
+This is an automated email. Please do not reply to this message directly.`,
+    };
+
+    // Send email
+    await transporter.sendMail(mailOptions);
 
     appointment.status = 'Scheduled';
     await appointment.save();
