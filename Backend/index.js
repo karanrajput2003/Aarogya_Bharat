@@ -756,6 +756,25 @@ This is an automated email. Please do not reply to this message directly.`,
   }
 });
 
+app.put('/api/appointments/status/:id', async (req, res) => {
+  const { status } = req.body;
+
+  // Only allow changing to "Completed"
+  if (status !== 'Completed') {
+    return res.status(400).send('Only "Completed" status is allowed');
+  }
+
+  try {
+    const updatedAppointment = await Consult.findByIdAndUpdate(req.params.id, { status: 'Completed' }, { new: true });
+    if (!updatedAppointment) {
+      return res.status(404).send('Appointment not found');
+    }
+    res.send(updatedAppointment);
+  } catch (error) {
+    res.status(500).send('Error updating appointment status');
+  }
+});
+
 // Backend route to fetch appointments by userId
 app.get('/api/myappointments', async (req, res) => {
   try {

@@ -52,15 +52,42 @@ const DoctorAppointmentDetails = () => {
     return null;
   }
 
+  // Handle status change to completed
+  const handleStatusChange = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND}/api/appointments/status/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          status: 'Completed',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update status.");
+      }
+
+      // Update status in state
+      setConsultationData((prevData) => ({
+        ...prevData,
+        status: 'Completed',
+      }));
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
   return (
     <>
-    <Navbar />
-    <main className="flex-1 overflow-y-auto bg-gradient-to-b from-[#073243] via-[#0a4c59] to-[#0d6270]">
+      <Navbar />
+      <main className="flex-1 overflow-y-auto bg-gradient-to-b from-[#073243] via-[#0a4c59] to-[#0d6270]">
         <div className="container mx-auto px-4 py-8">
-        <div className="mb-8 md:mb-10 lg:mb-12">
+          <div className="mb-8 md:mb-10 lg:mb-12">
             <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem] text-white text-center">
-            Patient and Consultation Details
-              </h1>
+              Patient and Consultation Details
+            </h1>
           </div>
           <div className="bg-white shadow-lg rounded-lg overflow-hidden">
             <div className="p-8">
@@ -73,13 +100,32 @@ const DoctorAppointmentDetails = () => {
               <dl className="sm:divide-y sm:divide-gray-200">
                 {/* Patient Details */}
                 <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500 flex items-center">
+                  <dt className="text-sm font-medium text-gray-500 flex items-center">
                     <Laptop className="mr-2 h-5 w-5" /> Meet Link
                   </dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  http://localhost:3030/kdkskdn1q121
+                    http://localhost:3030/kdkskdn1q121
                   </dd>
                 </div>
+                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500 flex items-center">
+                    <Phone className="mr-2 h-5 w-5" /> Phone Number
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    {consultationData.patient.phone}
+                  </dd>
+                </div>
+                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500 flex items-center">
+                    <Mail className="mr-2 h-5 w-5" /> Email
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    {consultationData.patient.email}
+                  </dd>
+                </div>
+                {/* ... Other details ... */}
+                {/* Patient Details */}
+                
                 <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt className="text-sm font-medium text-gray-500 flex items-center">
                     <Phone className="mr-2 h-5 w-5" /> Phone Number
@@ -154,24 +200,7 @@ const DoctorAppointmentDetails = () => {
                     {consultationData.consultationDetails.doctorid}
                   </dd>
                 </div>
-
-                {/* Consent and Status */}
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500 flex items-center">
-                    <CheckCircle className="mr-2 h-5 w-5" /> Consent to Consultation
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.consentToConsultation ? "Yes" : "No"}
-                  </dd>
-                </div>
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">
-                    Additional Notes
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.additionalNotes || "None"}
-                  </dd>
-                </div>
+                {/* Status and Action Button */}
                 <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt className="text-sm font-medium text-gray-500">Status</dt>
                   <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
@@ -183,6 +212,15 @@ const DoctorAppointmentDetails = () => {
                     )}
                     {consultationData.status === "Unscheduled" && (
                       <span className="text-red-500">{consultationData.status}</span>
+                    )}
+                    {/* Button to set status to 'Completed' */}
+                    {consultationData.status !== "Completed" && (
+                      <button
+                        onClick={handleStatusChange}
+                        className="mx-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-blue-600"
+                      >
+                        Set Status to Completed
+                      </button>
                     )}
                   </dd>
                 </div>
