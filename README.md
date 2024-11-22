@@ -40,7 +40,7 @@ Aarogya Bharat is a comprehensive telehealth platform designed to transform heal
 ### Third-Party Integrations
 - **Video Conferencing**: WebRTC
 - **Payment Gateway**: PhonePe
-- **Chatbot**: Dialogflow/Custom AI-based NLP
+  
 ## **Installation**
 
 1. **Download this repositary**
