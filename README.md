@@ -12,7 +12,7 @@ Aarogya Bharat is a comprehensive telehealth platform designed to transform heal
 - **Role-Based Dashboards**: Tailored dashboards for each user type with actionable insights and metrics.
 
 ### Telehealth Services
-- **Video Chat and Messaging**: Real-time communication for virtual consultations (Currently Not Deployed successfully inplemented on the local host).
+- **Video Chat and Messaging**: Real-time communication for virtual consultations (Currently Not Deployed successfully inplemented on the local host (server directory)).
 - **QR Code Integration**: Secure access to medical records using QR codes.
 
 ### AI-Powered Chatbot (Currently Not Deployed successfully inplemented on the local host).
@@ -43,15 +43,21 @@ Aarogya Bharat is a comprehensive telehealth platform designed to transform heal
 - **Chatbot**: Dialogflow/Custom AI-based NLP
 ## **Installation**
 
-1. **Clone the Repository**
-   Frontend
+1. **Download this repositary**
+   - Frontend
    ```bash
    cd Aarogya_Bharat
    npm install
    npm run dev
    ```
-   Backend
+   - Backend
    ```bash
    cd Backend
    npm install
    npm run dev
+   ```
+   - Video Call
+   ```bash
+   cd server
+   npm install
+   node app.js
