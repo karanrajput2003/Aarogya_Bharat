@@ -42,12 +42,12 @@ function Login() {
         setTimeout(() => {
           navigate("/patient");
         }, 1000); // Delay navigation for user experience
-      } else if (response.data.roles[0] === "ROLE_MODERATOR") {
+      } else if (response.data.roles[0] === "ROLE_ADMIN") {
         toast.success("Login Successfully", {
           position: "top-right"
         });
         setTimeout(() => {
-          navigate("/doctor");
+          navigate("/admin");
         }, 1000); // Delay navigation for user experience
       }
     } catch (error) {

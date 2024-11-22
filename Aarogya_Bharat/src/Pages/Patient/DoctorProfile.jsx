@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import Navbar from '../../Components/Patient/Navbar';
 
 function DoctorProfile() {
-  const { id } = useParams(); // Get doctor ID from URL params
+  const { id } = useParams();
   const [doctor, setDoctor] = useState(null);
 
   useEffect(() => {

@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Users, 
@@ -10,7 +11,7 @@ import {
   X,
   Hospital,
 } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux';
 
 const navItems = [
   { icon: LayoutDashboard, text: 'Dashboard', href: '/admin' },
@@ -25,8 +26,15 @@ const navItems = [
 ]
 
 function Sidebar() {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
+  const userId = useSelector((state) => state.auth.userId);
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!userId) {
+      navigate('/login'); // Redirect to /login if userId is null
+    }
+  }, [userId, navigate]);
   return (
     <>
       <button

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react'
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 // const Component = () => {
@@ -10,8 +10,13 @@ import { useSelector } from "react-redux";
 
 function Navbar() {
   const userId = useSelector((state) => state.auth.userId);
-
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  useEffect(() => {
+    if (!userId) {
+      navigate('/login'); // Redirect to /login if userId is null
+    }
+  }, [userId, navigate]);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
