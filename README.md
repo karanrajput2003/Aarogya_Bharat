@@ -41,7 +41,7 @@ The Aarogya Bharat Admin Dashboard is a secure and intuitive interface for manag
 1. **Clone the Repository**
    Frontend
    ```bash
-   cd Aarogya-bharat
+   cd Aarogya_Bharat
    npm install
    npm run dev
    ```
