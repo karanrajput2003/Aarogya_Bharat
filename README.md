@@ -1,41 +1,46 @@
-# Aarogya Bharat Admin Dashboard
+# Aarogya Bharat
 
-## **Project Overview**
-The Aarogya Bharat Admin Dashboard is a secure and intuitive interface for managing users, roles, and permissions in the Aarogya Bharat healthcare platform. Built for telehealth and urban healthcare management, it simplifies the administration of doctors, patients, and other roles, ensuring privacy and efficiency.
+Aarogya Bharat is a comprehensive telehealth platform designed to transform healthcare management in urban areas. It bridges the gap between doctors, patients, and administrators, enabling seamless interaction, secure medical record management, and scalable healthcare services.
 
----
+## Features
 
-## **Key Features**
-### **1. User Management**
-- View, add, edit, and delete users.
-- Assign roles to users and manage their status (Active/Inactive).
-- Admin verify doctors and manage their status (Verified/Unverified).
-- Filters for roles (Doctors, Patients, Administrators).
+### User Management
+- **Multi-role Access**:
+  - **Patients**: Access medical records, book appointments, consult doctors via video, and view e-prescriptions.
+  - **Doctors**: Manage patient records, conduct virtual consultations, issue e-prescriptions, and manage schedules.
+  - **Administrators**: Oversee platform operations, manage users, roles, and permissions, and monitor analytics.
+- **Role-Based Dashboards**: Tailored dashboards for each user type with actionable insights and metrics.
 
-### **2. Role Management**
-- Predefined roles (Administrator, Doctor, Patient) with customizable permissions.
-- Add/Edit/Delete roles with role-specific attributes.
-- Assign permissions dynamically.
+### Telehealth Services
+- **Video Chat and Messaging**: Real-time communication for virtual consultations (Currently Not Deployed successfully inplemented on the local host).
+- **QR Code Integration**: Secure access to medical records using QR codes.
 
-### **3. Permissions Management**
-- Manage permissions for roles with a matrix view.
-- Categorized permissions for ease of understanding.
-- Real-time updates for role-based access control.
+### AI-Powered Chatbot (Currently Not Deployed successfully inplemented on the local host).
+- Provides:
+  - Home remedies for common ailments.
+  - Suggestions for nearby medical facilities and doctors.
+- Multilingual support.
 
-### **4. Mock API**
-- Simulates CRUD operations for users, roles, and permissions.
-- Provides mock responses to validate the UI.
+### Appointment and Resource Management
+- **Appointment Booking**: Real-time scheduling and notifications on the mail.
+  
+## Technical Stack
 
----
+### Frontend
+- **Framework**: React.js (Vite for development)
+- **Styling**: Tailwind CSS
+- **State Management**: Redux
 
-## **Tech Stack**
-- **Frontend:** React.js, Vite, Tailwind CSS
-- **Backend (Mock API):** Node.js, Express, JSON Server
-- **State Management:** Redux
-- **Database (Optional):** MongoDB and AWS s3 
+### Backend
+- **Framework**: Node.js with Express.js
+- **Database**: MongoDB and AWS(Medical Records Storage)
+- **Authentication**: JWT-based token authentication
+- **APIs**: RESTful APIs for all operations
 
----
-
+### Third-Party Integrations
+- **Video Conferencing**: WebRTC
+- **Payment Gateway**: PhonePe
+- **Chatbot**: Dialogflow/Custom AI-based NLP
 ## **Installation**
 
 1. **Clone the Repository**
