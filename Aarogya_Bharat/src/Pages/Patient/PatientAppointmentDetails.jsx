@@ -1,189 +1,189 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import {
-  Phone,
-  Mail,
-  Calendar,
-  Clock,
-  CheckCircle,
-  FileText,
-} from "lucide-react";
-import Navbar from "../../Components/Doctor/Navbar";
+"use client"
+
+import { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
+import { Phone, Mail, Calendar, Clock, CheckCircle, FileText, User, Clipboard, Shield, Activity } from "lucide-react"
+import Navbar from "../../Components/Patient/Navbar"
 
 const PatientAppointmentDetails = () => {
-  const { id } = useParams(); // Get the appointment ID from the URL
-  const [consultationData, setConsultationData] = useState(null); // State to hold the fetched data
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const { id } = useParams()
+  const [consultationData, setConsultationData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    // Fetch the virtual consultation data from the backend
     const fetchAppointmentDetails = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND}/api/appointments/${id}`);
+        const response = await fetch(`${import.meta.env.VITE_BACKEND}/api/appointments/${id}`)
         if (!response.ok) {
-          throw new Error("Error fetching appointment details.");
+          throw new Error("Error fetching appointment details.")
         }
-        const data = await response.json();
-        setConsultationData(data);
+        const data = await response.json()
+        setConsultationData(data)
       } catch (error) {
-        setError(error.message);
+        setError(error.message)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchAppointmentDetails();
-  }, [id]);
+    fetchAppointmentDetails()
+  }, [id])
 
-  // If loading, show a loading message
   if (loading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    return <LoadingSpinner />
   }
 
-  // If there's an error, show the error message
   if (error) {
-    return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
+    return <ErrorMessage message={error} />
   }
 
-  // If data hasn't loaded or is null, return null (shouldn't happen with proper loading/error handling)
   if (!consultationData) {
-    return null;
+    return null
   }
 
   return (
     <>
-    <Navbar />
-    <main className="flex-1 overflow-y-auto bg-gradient-to-b from-[#073243] via-[#0a4c59] to-[#0d6270]">
+      <Navbar />
+      <main className="flex-1 overflow-y-auto bg-gradient-to-b from-[#073243] via-[#0a4c59] to-[#0d6270]">
         <div className="container mx-auto px-4 py-8">
-        <div className="mb-8 md:mb-10 lg:mb-12">
-            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem] text-white text-center">
-            Patient and Consultation Details
-              </h1>
-          </div>
+          <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem] text-white text-center">Patient and Consultation Details</h1>
+          <br />
           <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-            <div className="p-8">
-              <h1 className="text-3xl font-bold text-gray-900">
-                Virtual Consultation Booking
-              </h1>
+            <div className="p-6 border-b border-gray-200">
+              <h2 className="text-2xl font-semibold text-gray-800">Virtual Consultation Booking</h2>
+              <p className="text-sm text-gray-600 mt-1">Appointment ID: {id}</p>
             </div>
-
-            <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
-              <dl className="sm:divide-y sm:divide-gray-200">
-                {/* Patient Details */}
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500 flex items-center">
-                    <Phone className="mr-2 h-5 w-5" /> Phone Number
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.patient.phone}
-                  </dd>
-                </div>
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500 flex items-center">
-                    <Mail className="mr-2 h-5 w-5" /> Email
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.patient.email}
-                  </dd>
-                </div>
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">
-                    Symptoms
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.patient.symptoms}
-                  </dd>
-                </div>
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">
-                    Medical History
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.patient.medicalHistory || "No known conditions"}
-                  </dd>
-                </div>
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">
-                    Insurance Provider
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.patient.insuranceDetails.provider || "N/A"}
-                  </dd>
-                </div>
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">
-                    Insurance Policy Number
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.patient.insuranceDetails.policyNumber || "N/A"}
-                  </dd>
-                </div>
-
-                {/* Consultation Details */}
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500 flex items-center">
-                    <Calendar className="mr-2 h-5 w-5" /> Preferred Date
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {new Date(consultationData.consultationDetails.preferredDate).toLocaleDateString()}
-                  </dd>
-                </div>
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500 flex items-center">
-                    <Clock className="mr-2 h-5 w-5" /> Preferred Time
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.consultationDetails.preferredTime}
-                  </dd>
-                </div>
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">
-                    Doctor ID
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.consultationDetails.doctorid}
-                  </dd>
-                </div>
-
-                {/* Consent and Status */}
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500 flex items-center">
-                    <CheckCircle className="mr-2 h-5 w-5" /> Consent to Consultation
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.consentToConsultation ? "Yes" : "No"}
-                  </dd>
-                </div>
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">
-                  Prescription
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.additionalNotes || "None"}
-                  </dd>
-                </div>
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">Status</dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.status === "Scheduled" && (
-                      <span className="text-green-500">{consultationData.status}</span>
-                    )}
-                    {consultationData.status === "Completed" && (
-                      <span className="text-blue-500">{consultationData.status}</span>
-                    )}
-                    {consultationData.status === "Unscheduled" && (
-                      <span className="text-red-500">{consultationData.status}</span>
-                    )}
-                  </dd>
-                </div>
-              </dl>
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Section title="Patient Information">
+                  <InfoItem
+                    icon={<Phone className="text-blue-500" />}
+                    label="Phone Number"
+                    value={consultationData.patient.phone}
+                  />
+                  <InfoItem
+                    icon={<Mail className="text-blue-500" />}
+                    label="Email"
+                    value={consultationData.patient.email}
+                  />
+                  <InfoItem
+                    icon={<Activity className="text-blue-500" />}
+                    label="Symptoms"
+                    value={consultationData.patient.symptoms}
+                  />
+                  <InfoItem
+                    icon={<Clipboard className="text-blue-500" />}
+                    label="Medical History"
+                    value={consultationData.patient.medicalHistory || "No known conditions"}
+                  />
+                </Section>
+                <Section title="Insurance Details">
+                  <InfoItem
+                    icon={<Shield className="text-blue-500" />}
+                    label="Insurance Provider"
+                    value={consultationData.patient.insuranceDetails.provider || "N/A"}
+                  />
+                  <InfoItem
+                    icon={<FileText className="text-blue-500" />}
+                    label="Policy Number"
+                    value={consultationData.patient.insuranceDetails.policyNumber || "N/A"}
+                  />
+                </Section>
+              </div>
+              <div className="mt-8">
+                <Section title="Consultation Details">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <InfoItem
+                      icon={<Calendar className="text-green-500" />}
+                      label="Preferred Date"
+                      value={new Date(consultationData.consultationDetails.preferredDate).toLocaleDateString()}
+                    />
+                    <InfoItem
+                      icon={<Clock className="text-green-500" />}
+                      label="Preferred Time"
+                      value={consultationData.consultationDetails.preferredTime}
+                    />
+                    <InfoItem
+                      icon={<User className="text-green-500" />}
+                      label="Doctor ID"
+                      value={consultationData.consultationDetails.doctorid}
+                    />
+                    <InfoItem
+                      icon={<CheckCircle className="text-green-500" />}
+                      label="Consent to Consultation"
+                      value={consultationData.consentToConsultation ? "Yes" : "No"}
+                    />
+                  </div>
+                </Section>
+              </div>
+              <div className="mt-8">
+                <Section title="Prescription and Status">
+                  <InfoItem
+                    icon={<FileText className="text-purple-500" />}
+                    label="Prescription"
+                    value={consultationData.additionalNotes || "None"}
+                  />
+                  <InfoItem
+                    icon={<Activity className="text-purple-500" />}
+                    label="Status"
+                    value={<StatusBadge status={consultationData.status} />}
+                  />
+                </Section>
+              </div>
             </div>
           </div>
         </div>
       </main>
     </>
-  );
-};
+  )
+}
 
-export default PatientAppointmentDetails;
+const Section = ({ title, children }) => (
+  <div className="mb-6">
+    <h3 className="text-lg font-semibold text-gray-700 mb-4">{title}</h3>
+    <div className="space-y-4">{children}</div>
+  </div>
+)
+
+const InfoItem = ({ icon, label, value }) => (
+  <div className="flex items-start">
+    <div className="flex-shrink-0 mt-1">{icon}</div>
+    <div className="ml-3">
+      <p className="text-sm font-medium text-gray-500">{label}</p>
+      <p className="mt-1 text-sm text-gray-900">{value}</p>
+    </div>
+  </div>
+)
+
+const StatusBadge = ({ status }) => {
+  const colors = {
+    Scheduled: "bg-green-100 text-green-800",
+    Completed: "bg-blue-100 text-blue-800",
+    Unscheduled: "bg-red-100 text-red-800",
+  }
+
+  return (
+    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${colors[status]}`}>
+      {status}
+    </span>
+  )
+}
+
+const LoadingSpinner = () => (
+  <div className="flex justify-center items-center h-screen">
+    <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+  </div>
+)
+
+const ErrorMessage = ({ message }) => (
+  <div className="flex justify-center items-center h-screen">
+    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+      <strong className="font-bold">Error: </strong>
+      <span className="block sm:inline">{message}</span>
+    </div>
+  </div>
+)
+
+export default PatientAppointmentDetails
+

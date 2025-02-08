@@ -1,235 +1,140 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import {
-  Phone,
-  Mail,
-  Calendar,
-  Clock,
-  CheckCircle,
-  FileText,
-  Laptop
-} from "lucide-react";
+import { Plus, X, FilePlus } from "lucide-react";
 import Navbar from "../../Components/Doctor/Navbar";
 
+const COMMON_MEDICATIONS = {
+  "Pain & Fever": [
+    { name: "Paracetamol 500mg", dosage: "1 tablet every 6 hours as needed" },
+    { name: "Ibuprofen 400mg", dosage: "1 tablet every 8 hours after food" },
+  ],
+  "Cold & Flu": [
+    { name: "Cetirizine 10mg", dosage: "1 tablet at night" },
+    { name: "Dextromethorphan", dosage: "10ml every 6 hours" },
+  ],
+};
+
+const COMMON_INSTRUCTIONS = [
+  "Take medicines after food",
+  "Drink plenty of water",
+];
+
+const COMMON_DIAGNOSES = [
+  "Upper Respiratory Tract Infection",
+  "Migraine",
+];
+
 const DoctorAppointmentDetails = () => {
-  const { id } = useParams(); // Get the appointment ID from the URL
-  const [consultationData, setConsultationData] = useState(null); // State to hold the fetched data
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const { id } = useParams();
+  const [consultationData, setConsultationData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedMedications, setSelectedMedications] = useState([]);
+  const [selectedInstructions, setSelectedInstructions] = useState([]);
+  const [customInstruction, setCustomInstruction] = useState("");
+  const [diagnosis, setDiagnosis] = useState("");
+  const [followUpDays, setFollowUpDays] = useState(7);
 
   useEffect(() => {
-    // Fetch the virtual consultation data from the backend
     const fetchAppointmentDetails = async () => {
       try {
         const response = await fetch(`${import.meta.env.VITE_BACKEND}/api/appointments/${id}`);
-        if (!response.ok) {
-          throw new Error("Error fetching appointment details.");
-        }
+        if (!response.ok) throw new Error("Failed to fetch appointment details");
         const data = await response.json();
         setConsultationData(data);
-      } catch (error) {
-        setError(error.message);
+      } catch (err) {
+        setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-
     fetchAppointmentDetails();
   }, [id]);
 
-  // If loading, show a loading message
-  if (loading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
-  }
+  const handleAddMedication = (medication) => {
+    setSelectedMedications((prev) => [...prev, medication]);
+  };
 
-  // If there's an error, show the error message
-  if (error) {
-    return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
-  }
+  const handleRemoveMedication = (index) => {
+    setSelectedMedications((prev) => prev.filter((_, i) => i !== index));
+  };
 
-  // If data hasn't loaded or is null, return null (shouldn't happen with proper loading/error handling)
-  if (!consultationData) {
-    return null;
-  }
+  const handleToggleInstruction = (instruction) => {
+    setSelectedInstructions((prev) =>
+      prev.includes(instruction) ? prev.filter((i) => i !== instruction) : [...prev, instruction]
+    );
+  };
 
-  // Handle status change to completed
-  const handleStatusChange = async () => {
+  const handlePrescriptionSubmit = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND}/api/appointments/status/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          status: 'Completed',
-        }),
+      const prescriptionData = {
+        appointmentId: id,
+        patientId: consultationData.patient.id,
+        doctorId: consultationData.consultationDetails.doctorid,
+        diagnosis,
+        medications: selectedMedications.map((med) => `${med.name} - ${med.dosage}`).join("\n"),
+        instructions: selectedInstructions.join("\n"),
+        followUpDate: new Date(Date.now() + followUpDays * 24 * 60 * 60 * 1000).toISOString(),
+        date: new Date().toISOString(),
+      };
+
+      const response = await fetch(`${import.meta.env.VITE_BACKEND}/api/prescriptions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(prescriptionData),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to update status.");
-      }
+      if (!response.ok) throw new Error("Failed to save prescription");
 
-      // Update status in state
-      setConsultationData((prevData) => ({
-        ...prevData,
-        status: 'Completed',
-      }));
+      const data = await response.json();
+      setConsultationData((prev) => ({ ...prev, prescriptionId: data.id }));
+      alert("Prescription saved successfully!");
     } catch (error) {
       setError(error.message);
     }
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-gray-100">
       <Navbar />
-      <main className="flex-1 overflow-y-auto bg-gradient-to-b from-[#073243] via-[#0a4c59] to-[#0d6270]">
-        <div className="container mx-auto px-4 py-8">
-          <div className="mb-8 md:mb-10 lg:mb-12">
-            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem] text-white text-center">
-              Patient and Consultation Details
-            </h1>
-          </div>
-          <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-            <div className="p-8">
-              <h1 className="text-3xl font-bold text-gray-900">
-                Virtual Consultation Booking
-              </h1>
+      <main className="container mx-auto px-4 py-8">
+        {consultationData?.status === "Completed" && !consultationData.prescriptionId && (
+          <div className="bg-white shadow-lg rounded-lg p-6">
+            <h2 className="text-xl font-semibold mb-4">Quick Prescription</h2>
+            <div>
+              <label>Diagnosis</label>
+              <div className="flex flex-wrap gap-2">
+                {COMMON_DIAGNOSES.map((d) => (
+                  <button
+                    key={d}
+                    onClick={() => setDiagnosis(d)}
+                    className={`px-3 py-1 rounded-full ${diagnosis === d ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+                  >
+                    {d}
+                  </button>
+                ))}
+              </div>
             </div>
-
-            <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
-              <dl className="sm:divide-y sm:divide-gray-200">
-                {/* Patient Details */}
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500 flex items-center">
-                    <Laptop className="mr-2 h-5 w-5" /> Meet Link
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    http://localhost:3030/kdkskdn1q121
-                  </dd>
+            <div>
+              <label>Medications</label>
+              {Object.entries(COMMON_MEDICATIONS).map(([category, meds]) => (
+                <div key={category}>
+                  <h4>{category}</h4>
+                  {meds.map((med) => (
+                    <button key={med.name} onClick={() => handleAddMedication(med)}>
+                      {med.name}
+                    </button>
+                  ))}
                 </div>
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500 flex items-center">
-                    <Phone className="mr-2 h-5 w-5" /> Phone Number
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.patient.phone}
-                  </dd>
-                </div>
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500 flex items-center">
-                    <Mail className="mr-2 h-5 w-5" /> Email
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.patient.email}
-                  </dd>
-                </div>
-                {/* ... Other details ... */}
-                {/* Patient Details */}
-                
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500 flex items-center">
-                    <Phone className="mr-2 h-5 w-5" /> Phone Number
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.patient.phone}
-                  </dd>
-                </div>
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500 flex items-center">
-                    <Mail className="mr-2 h-5 w-5" /> Email
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.patient.email}
-                  </dd>
-                </div>
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">
-                    Symptoms
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.patient.symptoms}
-                  </dd>
-                </div>
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">
-                    Medical History
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.patient.medicalHistory || "No known conditions"}
-                  </dd>
-                </div>
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">
-                    Insurance Provider
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.patient.insuranceDetails.provider || "N/A"}
-                  </dd>
-                </div>
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">
-                    Insurance Policy Number
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.patient.insuranceDetails.policyNumber || "N/A"}
-                  </dd>
-                </div>
-
-                {/* Consultation Details */}
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500 flex items-center">
-                    <Calendar className="mr-2 h-5 w-5" /> Preferred Date
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {new Date(consultationData.consultationDetails.preferredDate).toLocaleDateString()}
-                  </dd>
-                </div>
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500 flex items-center">
-                    <Clock className="mr-2 h-5 w-5" /> Preferred Time
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.consultationDetails.preferredTime}
-                  </dd>
-                </div>
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">
-                    Doctor ID
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.consultationDetails.doctorid}
-                  </dd>
-                </div>
-                {/* Status and Action Button */}
-                <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500">Status</dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {consultationData.status === "Scheduled" && (
-                      <span className="text-green-500">{consultationData.status}</span>
-                    )}
-                    {consultationData.status === "Completed" && (
-                      <span className="text-blue-500">{consultationData.status}</span>
-                    )}
-                    {consultationData.status === "Unscheduled" && (
-                      <span className="text-red-500">{consultationData.status}</span>
-                    )}
-                    {/* Button to set status to 'Completed' */}
-                    {consultationData.status !== "Completed" && (
-                      <button
-                        onClick={handleStatusChange}
-                        className="mx-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-blue-600"
-                      >
-                        Set Status to Completed
-                      </button>
-                    )}
-                  </dd>
-                </div>
-              </dl>
+              ))}
             </div>
+            <button onClick={handlePrescriptionSubmit} className="bg-green-500 text-white p-2 rounded">
+              <FilePlus /> Generate Prescription
+            </button>
           </div>
-        </div>
+        )}
       </main>
-    </>
+    </div>
   );
 };
 
