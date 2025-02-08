@@ -1,141 +1,177 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Plus, X, FilePlus } from "lucide-react";
-import Navbar from "../../Components/Doctor/Navbar";
+"use client"
 
-const COMMON_MEDICATIONS = {
-  "Pain & Fever": [
-    { name: "Paracetamol 500mg", dosage: "1 tablet every 6 hours as needed" },
-    { name: "Ibuprofen 400mg", dosage: "1 tablet every 8 hours after food" },
-  ],
-  "Cold & Flu": [
-    { name: "Cetirizine 10mg", dosage: "1 tablet at night" },
-    { name: "Dextromethorphan", dosage: "10ml every 6 hours" },
-  ],
-};
-
-const COMMON_INSTRUCTIONS = [
-  "Take medicines after food",
-  "Drink plenty of water",
-];
-
-const COMMON_DIAGNOSES = [
-  "Upper Respiratory Tract Infection",
-  "Migraine",
-];
+import { useEffect, useState } from "react"
+import { useParams, useNavigate } from "react-router-dom"
+import { Phone, Mail, Calendar, Clock, CheckCircle, FileText, Laptop, User, Shield, Activity, Clipboard } from "lucide-react"
+import Navbar from "../../Components/Doctor/Navbar"
 
 const DoctorAppointmentDetails = () => {
-  const { id } = useParams();
-  const [consultationData, setConsultationData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [selectedMedications, setSelectedMedications] = useState([]);
-  const [selectedInstructions, setSelectedInstructions] = useState([]);
-  const [customInstruction, setCustomInstruction] = useState("");
-  const [diagnosis, setDiagnosis] = useState("");
-  const [followUpDays, setFollowUpDays] = useState(7);
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const [consultationData, setConsultationData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [updating, setUpdating] = useState(false)
 
   useEffect(() => {
     const fetchAppointmentDetails = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND}/api/appointments/${id}`);
-        if (!response.ok) throw new Error("Failed to fetch appointment details");
-        const data = await response.json();
-        setConsultationData(data);
-      } catch (err) {
-        setError(err.message);
+        const response = await fetch(`${import.meta.env.VITE_BACKEND}/api/appointments/${id}`)
+        if (!response.ok) {
+          throw new Error("Error fetching appointment details.")
+        }
+        const data = await response.json()
+        setConsultationData(data)
+      } catch (error) {
+        setError(error.message)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-    fetchAppointmentDetails();
-  }, [id]);
-
-  const handleAddMedication = (medication) => {
-    setSelectedMedications((prev) => [...prev, medication]);
-  };
-
-  const handleRemoveMedication = (index) => {
-    setSelectedMedications((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleToggleInstruction = (instruction) => {
-    setSelectedInstructions((prev) =>
-      prev.includes(instruction) ? prev.filter((i) => i !== instruction) : [...prev, instruction]
-    );
-  };
-
-  const handlePrescriptionSubmit = async () => {
-    try {
-      const prescriptionData = {
-        appointmentId: id,
-        patientId: consultationData.patient.id,
-        doctorId: consultationData.consultationDetails.doctorid,
-        diagnosis,
-        medications: selectedMedications.map((med) => `${med.name} - ${med.dosage}`).join("\n"),
-        instructions: selectedInstructions.join("\n"),
-        followUpDate: new Date(Date.now() + followUpDays * 24 * 60 * 60 * 1000).toISOString(),
-        date: new Date().toISOString(),
-      };
-
-      const response = await fetch(`${import.meta.env.VITE_BACKEND}/api/prescriptions`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(prescriptionData),
-      });
-
-      if (!response.ok) throw new Error("Failed to save prescription");
-
-      const data = await response.json();
-      setConsultationData((prev) => ({ ...prev, prescriptionId: data.id }));
-      alert("Prescription saved successfully!");
-    } catch (error) {
-      setError(error.message);
     }
-  };
+
+    fetchAppointmentDetails()
+  }, [id])
+
+  const handleStatusChange = async () => {
+    setUpdating(true)
+    setError(null)
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND}/api/appointments/status/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "Completed" }),
+      })
+
+      if (!response.ok) throw new Error("Failed to update status.")
+
+      setConsultationData((prevData) => ({
+        ...prevData,
+        status: "Completed",
+      }))
+    } catch (error) {
+      setError(error.message)
+    } finally {
+      setUpdating(false)
+    }
+  }
+
+  if (loading) return <LoadingSpinner />
+  if (error) return <ErrorMessage message={error} />
+  if (!consultationData) return null
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gradient-to-b from-[#073243] via-[#0a4c59] to-[#0d6270]">
       <Navbar />
       <main className="container mx-auto px-4 py-8">
-        {consultationData?.status === "Completed" && !consultationData.prescriptionId && (
-          <div className="bg-white shadow-lg rounded-lg p-6">
-            <h2 className="text-xl font-semibold mb-4">Quick Prescription</h2>
-            <div>
-              <label>Diagnosis</label>
-              <div className="flex flex-wrap gap-2">
-                {COMMON_DIAGNOSES.map((d) => (
-                  <button
-                    key={d}
-                    onClick={() => setDiagnosis(d)}
-                    className={`px-3 py-1 rounded-full ${diagnosis === d ? "bg-blue-500 text-white" : "bg-gray-200"}`}
-                  >
-                    {d}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div>
-              <label>Medications</label>
-              {Object.entries(COMMON_MEDICATIONS).map(([category, meds]) => (
-                <div key={category}>
-                  <h4>{category}</h4>
-                  {meds.map((med) => (
-                    <button key={med.name} onClick={() => handleAddMedication(med)}>
-                      {med.name}
-                    </button>
-                  ))}
-                </div>
-              ))}
-            </div>
-            <button onClick={handlePrescriptionSubmit} className="bg-green-500 text-white p-2 rounded">
-              <FilePlus /> Generate Prescription
-            </button>
+        <h1 className="text-3xl font-bold text-white mb-8 text-center">Patient and Consultation Details</h1>
+        <div className="bg-white/10 backdrop-blur-md rounded-lg shadow-lg overflow-hidden">
+          <div className="p-6 border-b border-white/20">
+            <h2 className="text-2xl font-semibold text-white">Virtual Consultation Booking</h2>
           </div>
-        )}
+          <div className="p-6">
+            <div className="grid gap-6 md:grid-cols-2">
+              <InfoSection title="Patient Information">
+                <InfoItem icon={<Laptop />} label="Meet Link" value={consultationData.consultationDetails.meetLink || 'http://localhost:3030/kdkskdn1q121'} />
+                <InfoItem icon={<Phone />} label="Phone Number" value={consultationData.patient.phone} />
+                <InfoItem icon={<Mail />} label="Email" value={consultationData.patient.email} />
+                <InfoItem icon={<Activity />} label="Symptoms" value={consultationData.patient.symptoms} />
+                <InfoItem icon={<FileText />} label="Medical History" value={consultationData.patient.medicalHistory || "No known conditions"} />
+              </InfoSection>
+              <InfoSection title="Insurance Details">
+                <InfoItem icon={<Shield />} label="Insurance Provider" value={consultationData.patient.insuranceDetails.provider || "N/A"} />
+                <InfoItem icon={<FileText />} label="Policy Number" value={consultationData.patient.insuranceDetails.policyNumber || "N/A"} />
+              </InfoSection>
+            </div>
+            
+            {/* Consultation Details */}
+            <InfoSection title="Consultation Details">
+              <div className="grid gap-6 md:grid-cols-2">
+                <InfoItem icon={<Calendar />} label="Preferred Date" value={new Date(consultationData.consultationDetails.preferredDate).toLocaleDateString()} />
+                <InfoItem icon={<Clock />} label="Preferred Time" value={consultationData.consultationDetails.preferredTime} />
+                <InfoItem icon={<User />} label="Doctor ID" value={consultationData.consultationDetails.doctorid} />
+                <InfoItem icon={<CheckCircle />} label="Status" value={<StatusBadge status={consultationData.status} />} />
+              </div>
+            </InfoSection>
+
+            {/* Prescription Section */}
+            <InfoSection title="Prescription">
+              {consultationData.prescription ? (
+                <div className="bg-gray-800 text-white p-4 rounded-md">
+                  <p><strong>Medicines:</strong> {consultationData.prescription.medicines}</p>
+                  <p><strong>Dosage:</strong> {consultationData.prescription.dosage}</p>
+                  <p><strong>Instructions:</strong> {consultationData.prescription.instructions}</p>
+                </div>
+              ) : (
+                <button
+                  onClick={() => navigate(`/doctor/giveprescription/${id}`)}
+                  className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-300"
+                >
+                  Add Prescription
+                </button>
+              )}
+            </InfoSection>
+
+            {/* Status Update Button */}
+            {consultationData.status !== "Completed" && (
+              <div className="mt-6">
+                <button
+                  onClick={handleStatusChange}
+                  disabled={updating}
+                  className={`w-full px-4 py-2 text-white rounded-md transition-colors duration-300 ${
+                    updating ? "bg-gray-500 cursor-not-allowed" : "bg-green-500 hover:bg-green-600"
+                  }`}
+                >
+                  {updating ? "Updating..." : "Set Status to Completed"}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </main>
     </div>
-  );
-};
+  )
+}
 
-export default DoctorAppointmentDetails;
+const InfoSection = ({ title, children }) => (
+  <div className="mb-6">
+    <h3 className="text-xl font-semibold text-white mb-4">{title}</h3>
+    <div className="space-y-4">{children}</div>
+  </div>
+)
+
+const InfoItem = ({ icon, label, value }) => (
+  <div className="flex items-start">
+    <div className="flex-shrink-0 mt-1 text-teal-400">{icon}</div>
+    <div className="ml-3">
+      <p className="text-sm font-medium text-gray-300">{label}</p>
+      <p className="mt-1 text-sm text-white">{value}</p>
+    </div>
+  </div>
+)
+
+const StatusBadge = ({ status }) => {
+  const colors = {
+    Scheduled: "bg-yellow-500 text-yellow-100",
+    Completed: "bg-green-500 text-green-100",
+    Unscheduled: "bg-red-500 text-red-100",
+  }
+
+  return <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${colors[status]}`}>{status}</span>
+}
+
+const LoadingSpinner = () => (
+  <div className="flex justify-center items-center h-screen">
+    <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-white"></div>
+  </div>
+)
+
+const ErrorMessage = ({ message }) => (
+  <div className="flex justify-center items-center h-screen">
+    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+      <strong className="font-bold">Error: </strong>
+      <span className="block sm:inline">{message}</span>
+    </div>
+  </div>
+)
+
+export default DoctorAppointmentDetails

@@ -15,6 +15,9 @@ import DoctorProfilePage from './Pages/Doctor/DoctorProfile.jsx';
 import DoctorUpdateProfile from './Pages/Doctor/DoctorUpdateProfile.jsx';
 import DoctorDashboard from './Pages/Doctor/DoctorDashboard.jsx';
 import DoctorAppointmentDetails from './Pages/Doctor/DoctorAppointmentDetails.jsx'
+import DoctorGivePrescription from './Pages/Doctor/DoctorGivePrescription.jsx';
+
+
 // Patient
 import PatientHome from './Pages/Patient/PatientHome.jsx';
 import FindDoctor from './Pages/Patient/FindDoctor.jsx';
@@ -89,6 +92,10 @@ const router = createBrowserRouter([
   {
     path: 'doctor/appointmentdetails/:id',
     element: <DoctorAppointmentDetails />,
+  },
+  {
+    path: 'doctor/giveprescription/:patientId',
+    element: <DoctorGivePrescription />,
   },
   {
     path: '/patient',
