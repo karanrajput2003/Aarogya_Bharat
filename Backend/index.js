@@ -785,3 +785,37 @@ app.get('/api/myappointments', async (req, res) => {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
+
+
+app.get('/api/hospitals', async (req, res) => {
+  try {
+      const { lat, lng } = req.query;
+      if (!lat || !lng) {
+          return res.status(400).json({ error: 'Latitude and Longitude are required' });
+      }
+
+      const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+      const radius = 5000; // Search radius in meters (5 km)
+      const type = 'hospital';
+
+      const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${radius}&type=${type}&key=${apiKey}`;
+
+      const response = await axios.get(url);
+      const hospitals = response.data.results.map(hospital => ({
+          id: hospital.place_id,
+          name: hospital.name,
+          address: hospital.vicinity,
+          rating: hospital.rating || "N/A",
+          lat: hospital.geometry.location.lat,
+          lng: hospital.geometry.location.lng,
+          type: hospital.types.includes('government') ? 'Government' : 'Private',
+          specialties: ["General", "Emergency", "Surgery"], // Static example, as API doesn't provide this directly
+          beds: Math.floor(Math.random() * 200) + 50, // Randomized bed count
+      }));
+
+      res.json(hospitals);
+  } catch (error) {
+      console.error('Error fetching hospitals:', error);
+      res.status(500).json({ error: 'Failed to fetch hospital data' });
+  }
+});

@@ -74,6 +74,12 @@ function Navbar() {
                   Insurance Calculator
                 </Link>
                 <Link
+                  to="/bmi-calculator"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+                >
+                  BMI Calculator
+                </Link>
+                <Link
                   to="/nearby-medical-shops"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
                 >
@@ -133,6 +139,14 @@ function Navbar() {
                         className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
                       >
                         Insurance Calculator
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/bmi-calculator"
+                        className="block px-4 py-2 text-gray-700 hover:bg-gray-200"
+                      >
+                        BMI Calculator
                       </Link>
                     </li>
                     <li>

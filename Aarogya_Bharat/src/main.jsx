@@ -14,6 +14,7 @@ import Doctorlogin from './Pages/Doctor/Login.jsx';
 import InsuranceCalculator from './Pages/Home/Features/InsuranceCalculator.jsx';
 import NearByHospital from './Pages/Home/Features/NearByHospital.jsx';
 import NearByMedical from './Pages/Home/Features/NearByMedical.jsx';
+import BMICalculator from './Pages/Home/Features/BMICalculator.jsx';
 
 import DoctorHome from './Pages/Doctor/Home.jsx';
 import DoctorProfilePage from './Pages/Doctor/DoctorProfile.jsx';
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
   {
     path: '/insurance-calculator',
     element: <InsuranceCalculator />,
+  },
+  {
+    path: '/bmi-calculator',
+    element: <BMICalculator />,
   },
   {
     path: '/nearby-medical-shops',
