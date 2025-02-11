@@ -10,6 +10,11 @@ import store from './redux/store';
 import Login from './Pages/Home/Login.jsx';
 import Register from './Pages/Home/Register.jsx';
 import Doctorlogin from './Pages/Doctor/Login.jsx';
+
+import InsuranceCalculator from './Pages/Home/Features/InsuranceCalculator.jsx';
+import NearByHospital from './Pages/Home/Features/NearByHospital.jsx';
+import NearByMedical from './Pages/Home/Features/NearByMedical.jsx';
+
 import DoctorHome from './Pages/Doctor/Home.jsx';
 import DoctorProfilePage from './Pages/Doctor/DoctorProfile.jsx';
 import DoctorUpdateProfile from './Pages/Doctor/DoctorUpdateProfile.jsx';
@@ -56,6 +61,18 @@ const router = createBrowserRouter([
   {
     path: '/register',
     element: <Register />,
+  },
+  {
+    path: '/insurance-calculator',
+    element: <InsuranceCalculator />,
+  },
+  {
+    path: '/nearby-medical-shops',
+    element: <NearByMedical />,
+  },
+  {
+    path: '/nearby-hospital',
+    element: <NearByHospital />,
   },
   {
     path: '/doctorlogin',
