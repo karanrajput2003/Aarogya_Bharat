@@ -819,3 +819,20 @@ app.get('/api/hospitals', async (req, res) => {
       res.status(500).json({ error: 'Failed to fetch hospital data' });
   }
 });
+
+const { Routing } = require('ola-maps');
+
+const API_KEY = 'fZbiOmfXrWU04v1WAr2dx4r6oiBG3';
+
+app.get("/api/hospitals", async (req, res) => {
+  const { lat, lng } = req.query;
+
+  try {
+    const response = await axios.get(
+      `https://api.ola.krutrim.com/maps/v1/places?query=hospital&location=${lat},${lng}&radius=5000&key=${API_KEY}`
+    );
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch hospital data" });
+  }
+});
