@@ -2,17 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { Card, Input, List, Space, Button, message, Spin } from 'antd';
 import { MapPin, Navigation2 } from 'lucide-react';
 import { Map, Marker, Overlay } from 'pigeon-maps';
+import Navbar from '../../../Components/Home/Navbar';
 
 const { Search } = Input;
 
 const NearByHospital = () => {
   const [hospitals, setHospitals] = useState([]);
-  const [userLocation, setUserLocation] = useState([19.0473, 72.8180]); 
+  const [userLocation, setUserLocation] = useState([null,null]  ); 
   const [loading, setLoading] = useState(false);
   const [selectedHospital, setSelectedHospital] = useState(null);
   const [center, setCenter] = useState([19.0760, 72.8777]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 7;
+  const itemsPerPage = 4;
 
   useEffect(() => {
     getCurrentLocation();
@@ -29,7 +30,6 @@ const NearByHospital = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const userPos = [position.coords.latitude, position.coords.longitude];
-          // console.log(`https://www.google.com/maps/dir/${userPos[0]},${userPos[1]}/`);
           setUserLocation(userPos);
           setCenter(userPos);
           message.success('Location found successfully!');
@@ -97,7 +97,9 @@ const NearByHospital = () => {
   const paginatedHospitals = hospitals.slice(0, currentPage * itemsPerPage);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-8">
+    <>
+    <Navbar />
+    <div className="min-h-screen bg-gradient-to-b from-[#073243] via-[#0a4c59] to-[#0d6270] py-8">
       <div className="container mx-auto px-4">
         <Card className="shadow-lg">
           <div className="flex justify-between items-center mb-6">
@@ -214,6 +216,7 @@ const NearByHospital = () => {
         </Card>
       </div>
     </div>
+    </>
   );
 };
 
