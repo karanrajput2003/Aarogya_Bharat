@@ -253,7 +253,64 @@ video:hover {
     display: block;
     position: absolute;
     left: 1rem;
-    color: var(--primary);
+    color: white;
     cursor: pointer;
   }
+}
+
+
+
+.header {
+  background: var(--primary);
+  padding: 1rem;
+  color: white;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo img {
+  width: 40px;
+  height: 40px;
+}
+
+.options__button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 25px;
+  width: 100px;
+  background:var(--primary);
+  align-items: center;
+  color: rgb(255, 255, 255);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.options__button:hover {
+  background:var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(26, 115, 232, 0.3);
+}
+
+.options__button i {
+  font-size: 1.2rem;
+}
+
+.options {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.options__left, .options__right {
+  display: flex;
+  gap: 1rem;
 }
