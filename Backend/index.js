@@ -108,30 +108,74 @@ app.get('/patient/:id', async (req, res) => {
 // const { S3Client, ListObjectsV2Command } = require('@aws-sdk/client-s3');
 const fileparser = require('./fileparser');
 
+// app.post('/api/uploadfile', async (req, res) => {
+//   try {
+//     const { fileUrl, fields } = await fileparser(req);
+
+//     const newRecord = new MedicalRecord({
+//       userId: fields.userId,
+//       title: fields.title,
+//       description: fields.description,
+//       fileUrl
+//     });
+
+//     const savedRecord = await newRecord.save();
+    
+//     res.status(200).json({
+//       message: "Record saved successfully",
+//       data: savedRecord
+//     });
+//   } catch (error) {
+//     res.status(400).json({
+//       message: "An error occurred.",
+//       error
+//     });
+//   }
+// });
+
+
+// Upload File Using Pinata
 app.post('/api/uploadfile', async (req, res) => {
   try {
-    const { fileUrl, fields } = await fileparser(req);
+    const { userId, title, description,fileUrl} = req.body;
 
-    const newRecord = new MedicalRecord({
-      userId: fields.userId,
-      title: fields.title,
-      description: fields.description,
-      fileUrl
+      const newRecord = new MedicalRecord({
+      userId,
+      title,
+      description,
+      fileUrl,
     });
 
     const savedRecord = await newRecord.save();
     
     res.status(200).json({
       message: "Record saved successfully",
-      data: savedRecord
+      data: savedRecord,
     });
   } catch (error) {
     res.status(400).json({
       message: "An error occurred.",
-      error
+      error,
     });
   }
 });
+
+// To delete the record
+app.delete('/api/medicalRecords/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedRecord = await MedicalRecord.findByIdAndDelete(id);
+
+    if (!deletedRecord) {
+      return res.status(404).json({ message: "Record not found" });
+    }
+
+    res.status(200).json({ message: "Record deleted successfully" });
+  } catch (error) {
+    res.status(400).json({ message: "An error occurred.", error });
+  }
+});
+
 
 app.get('/api/medicalRecords/:userId', async (req, res) => {
   const { userId } = req.params;
@@ -787,52 +831,6 @@ app.get('/api/myappointments', async (req, res) => {
 });
 
 
-app.get('/api/hospitals', async (req, res) => {
-  try {
-      const { lat, lng } = req.query;
-      if (!lat || !lng) {
-          return res.status(400).json({ error: 'Latitude and Longitude are required' });
-      }
-
-      const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-      const radius = 5000; // Search radius in meters (5 km)
-      const type = 'hospital';
-
-      const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${radius}&type=${type}&key=${apiKey}`;
-
-      const response = await axios.get(url);
-      const hospitals = response.data.results.map(hospital => ({
-          id: hospital.place_id,
-          name: hospital.name,
-          address: hospital.vicinity,
-          rating: hospital.rating || "N/A",
-          lat: hospital.geometry.location.lat,
-          lng: hospital.geometry.location.lng,
-          type: hospital.types.includes('government') ? 'Government' : 'Private',
-          specialties: ["General", "Emergency", "Surgery"], // Static example, as API doesn't provide this directly
-          beds: Math.floor(Math.random() * 200) + 50, // Randomized bed count
-      }));
-
-      res.json(hospitals);
-  } catch (error) {
-      console.error('Error fetching hospitals:', error);
-      res.status(500).json({ error: 'Failed to fetch hospital data' });
-  }
-});
-
-const { Routing } = require('ola-maps');
-
-const API_KEY = 'fZbiOmfXrWU04v1WAr2dx4r6oiBG3';
-
-app.get("/api/hospitals", async (req, res) => {
-  const { lat, lng } = req.query;
-
-  try {
-    const response = await axios.get(
-      `https://api.ola.krutrim.com/maps/v1/places?query=hospital&location=${lat},${lng}&radius=5000&key=${API_KEY}`
-    );
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch hospital data" });
-  }
+app.listen(5000, () => {
+    console.log('Server is running on port 5000');
 });

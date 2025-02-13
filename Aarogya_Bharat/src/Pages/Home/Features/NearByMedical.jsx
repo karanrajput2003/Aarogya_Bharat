@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Card, Input, List, Space, Button, message, Spin } from "antd";
-import { MapPin, Navigation2 } from "lucide-react";
+import { Input, List, Button, message, Spin } from "antd";
+import { MapPin, Navigation2, Search as SearchIcon } from "lucide-react";
 import { Map, Marker, Overlay } from "pigeon-maps";
-import Navbar from "../../../Components/Home/Navbar";
-
-const { Search } = Input;
 
 const NearByMedical = () => {
   const [places, setPlaces] = useState([]);
-  const [userLocation, setUserLocation] = useState(null, null); // Default to Bandra Bandstand
+  const [userLocation, setUserLocation] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [center, setCenter] = useState([19.0473, 72.818]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchType, setSearchType] = useState("medical"); // Default to medicals
+  const [searchType, setSearchType] = useState("medical");
   const itemsPerPage = 7;
 
   useEffect(() => {
@@ -116,36 +113,38 @@ const NearByMedical = () => {
   const paginatedPlaces = places.slice(0, currentPage * itemsPerPage);
 
   return (
-    <>
-      <Navbar />
-      <div className="min-h-screen bg-gradient-to-b from-[#073243] via-[#0a4c59] to-[#0d6270] py-8">
-        <div className="container mx-auto px-4">
-          <Card className="shadow-lg">
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-800 mb-2">
-                  Find Nearby Medicals and Labs
-                </h1>
-                <p className="text-gray-600">
-                  Discover healthcare facilities in your area
-                </p>
-              </div>
-            </div>
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="bg-white rounded-lg shadow-xl">
+          <div className="p-6 border-b border-gray-200">
+            <h1 className="text-3xl font-bold text-gray-900">
+              Nearby Healthcare Facilities
+            </h1>
+            <p className="text-lg text-gray-600 mt-2">
+              Find medical stores and labs in your vicinity
+            </p>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              <Search
-                placeholder="Search by name"
-                allowClear
-                enterButton="Search"
-                size="large"
-                onSearch={handleTextSearch}
-                loading={loading}
+          <div className="p-6 space-y-6">
+            {/* Search Bar */}
+            <div className="relative">
+              <SearchIcon className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search by name or location..."
+                className="w-full pl-10 pr-4 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                onChange={(e) => handleTextSearch(e.target.value)}
               />
             </div>
 
-            <div className="flex justify-center mb-6">
-              <Button
-                type={searchType === "medical" ? "primary" : "default"}
+            {/* Facility Type Tabs */}
+            <div className="flex space-x-4">
+              <button
+                className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${
+                  searchType === "medical"
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
                 onClick={() => {
                   setSearchType("medical");
                   setCurrentPage(1);
@@ -153,44 +152,47 @@ const NearByMedical = () => {
                 }}
               >
                 Medical Stores
-              </Button>
-              <Button
-                type={searchType === "lab" ? "primary" : "default"}
+              </button>
+              <button
+                className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${
+                  searchType === "lab"
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
                 onClick={() => {
                   setSearchType("lab");
                   setCurrentPage(1);
                   searchNearbyPlaces();
                 }}
-                style={{ marginLeft: "10px" }}
               >
                 Medical Labs
-              </Button>
+              </button>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid lg:grid-cols-2 gap-6">
               {/* Map Section */}
-              <div className="bg-gray-100 rounded-lg overflow-hidden">
-                <Map center={center} zoom={14} width="100%" height="400px">
-                  {userLocation && (
-                    <Marker anchor={userLocation} color="blue" />
-                  )}
-
+              <div className="rounded-xl overflow-hidden shadow-lg h-[500px]">
+                <Map center={center} zoom={14} width="100%" height="100%">
+                  {userLocation && <Marker anchor={userLocation} color="#3b82f6" />}
                   {paginatedPlaces.map((place) => (
                     <Marker
                       key={place.id}
                       anchor={place.location}
-                      color="red"
+                      color="#ef4444"
                       onClick={() => handleMarkerClick(place)}
                     />
                   ))}
-
                   {selectedPlace && (
                     <Overlay anchor={selectedPlace.location} offset={[120, 79]}>
-                      <div className="p-2 bg-white rounded shadow-md">
-                        <h3 className="font-semibold">{selectedPlace.name}</h3>
-                        <p className="text-sm mt-1">{selectedPlace.address}</p>
-                        <p className="text-sm mt-1">
-                          📍 {selectedPlace.distance} km away
+                      <div className="bg-white rounded-lg shadow-lg p-3 w-64">
+                        <h3 className="font-semibold text-gray-900">
+                          {selectedPlace.name}
+                        </h3>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {selectedPlace.address}
+                        </p>
+                        <p className="text-sm text-blue-600 mt-1 font-medium">
+                          {selectedPlace.distance} km away
                         </p>
                       </div>
                     </Overlay>
@@ -198,73 +200,76 @@ const NearByMedical = () => {
                 </Map>
               </div>
 
-              {/* Place List */}
-              <div className="bg-white rounded-lg">
+              {/* Places List */}
+              <div className="rounded-xl bg-white shadow-lg overflow-hidden">
                 {loading ? (
-                  <div className="flex justify-center items-center h-96">
+                  <div className="flex justify-center items-center h-[500px]">
                     <Spin size="large" />
                   </div>
                 ) : (
-                  <List
-                    className="bg-white rounded-lg"
-                    itemLayout="vertical"
-                    dataSource={paginatedPlaces}
-                    renderItem={(place) => (
-                      <List.Item
-                        className="hover:bg-gray-50 transition-colors cursor-pointer"
-                        onClick={() => handleMarkerClick(place)}
-                      >
-                        <div className="space-y-2">
-                          <div className="flex justify-between items-start">
-                            <h3 className="text-lg font-semibold text-gray-800">
+                  <div className="h-[500px] overflow-y-auto">
+                    <List
+                      className="divide-y divide-gray-100"
+                      dataSource={paginatedPlaces}
+                      renderItem={(place) => (
+                        <List.Item
+                          className="p-4 hover:bg-blue-50 transition-colors cursor-pointer"
+                          onClick={() => handleMarkerClick(place)}
+                        >
+                          <div className="space-y-3">
+                            <h3 className="text-lg font-semibold text-gray-900">
                               {place.name}
                             </h3>
+                            <div className="flex items-center text-gray-600">
+                              <MapPin className="w-4 h-4 mr-2" />
+                              <span className="text-sm">{place.address}</span>
+                            </div>
+                            <div className="flex items-center text-gray-600">
+                              <Navigation2 className="w-4 h-4 mr-2" />
+                              <span className="text-sm">
+                                {place.distance} km away
+                              </span>
+                            </div>
+                            <Button
+                              type="primary"
+                              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (userLocation) {
+                                  window.open(
+                                    `https://www.google.com/maps/dir/${userLocation[0]},${userLocation[1]}/${place.location[0]},${place.location[1]}`
+                                  );
+                                } else {
+                                  message.warning(
+                                    "Please enable location services for directions"
+                                  );
+                                }
+                              }}
+                            >
+                              Get Directions
+                            </Button>
                           </div>
-
-                          <Space className="text-gray-600">
-                            <MapPin className="w-4 h-4" />
-                            <span>{place.address}</span>
-                          </Space>
-
-                          <div className="flex items-center space-x-1 text-gray-600">
-                            <Navigation2 className="w-4 h-4" />
-                            <span>{place.distance} km away</span>
-                          </div>
-
-                          <Button
-                            type="primary"
-                            className="w-full bg-blue-600"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (userLocation) {
-                                window.open(
-                                  `https://www.google.com/maps/dir/${userLocation[0]},${userLocation[1]}/${place.location[0]},${place.location[1]}`
-                                );
-                              } else {
-                                message.warning(
-                                  "Please enable location services for directions"
-                                );
-                              }
-                            }}
-                          >
-                            Get Directions
-                          </Button>
-                        </div>
-                      </List.Item>
+                        </List.Item>
+                      )}
+                    />
+                    {paginatedPlaces.length < places.length && (
+                      <div className="p-4 border-t border-gray-100">
+                        <button
+                          onClick={loadMorePlaces}
+                          className="w-full bg-gray-50 hover:bg-gray-100 text-gray-600 font-medium py-2 rounded-lg transition-colors"
+                        >
+                          Load More
+                        </button>
+                      </div>
                     )}
-                  />
-                )}
-                {paginatedPlaces.length < places.length && (
-                  <div className="flex justify-center mt-4">
-                    <Button onClick={loadMorePlaces}>Load More</Button>
                   </div>
                 )}
               </div>
             </div>
-          </Card>
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

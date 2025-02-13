@@ -6,6 +6,7 @@ import { AlertCircle, FileUp, X } from "lucide-react"
 import Navbar from "../../Components/Patient/Navbar"
 import { toast, Toaster } from "react-hot-toast"
 import { useSelector } from "react-redux"
+import { pinata } from "./pinata" // Import Pinata
 
 export default function PatientAddRecord() {
   const userId = useSelector((state) => state.auth.userId)
@@ -33,16 +34,27 @@ export default function PatientAddRecord() {
 
   const onSubmit = async (data) => {
     setIsSubmitting(true)
-    const formData = new FormData()
-    formData.append("userId", userId)
-    formData.append("title", data.title)
-    formData.append("description", data.description)
-    if (file) formData.append("file", file)
 
     try {
+      let fileUrl = ""
+      if (file) {
+        const upload = await pinata.upload.file(file)
+        console.log(upload)
+        fileUrl = await pinata.gateways.convert(upload.IpfsHash)
+        console.log(fileUrl)
+      }
+
       const response = await fetch(`${import.meta.env.VITE_BACKEND}/api/uploadfile`, {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId,
+          title: data.title,
+          description: data.description,
+          fileUrl,
+        }),
       })
       const result = await response.json()
 
@@ -156,4 +168,3 @@ const FormField = ({ label, id, register, errors, validationRules, placeholder, 
     )}
   </div>
 )
-

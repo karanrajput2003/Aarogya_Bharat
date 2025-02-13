@@ -3,6 +3,7 @@ import Navbar from '../../Components/Patient/Navbar';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { toast, Toaster } from 'react-hot-toast';
+import { Trash2 } from 'lucide-react';
 
 export default function PatientUploadedRecords() {
   const userId = useSelector((state) => state.auth.userId);
@@ -25,6 +26,26 @@ export default function PatientUploadedRecords() {
     fetchRecords();
   }, [userId]);
 
+  const deleteRecord = async (recordId) => {
+    if (window.confirm('Are you sure you want to delete this record?')) {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND}/api/medicalRecords/${recordId}`, {
+          method: 'DELETE',
+        });
+        if (response.ok) {
+          setRecords(records.filter(record => record._id !== recordId));
+          toast.success('Record deleted successfully!');
+        } else {
+          const result = await response.json();
+          throw new Error(result.message || 'Failed to delete record');
+        }
+      } catch (error) {
+        console.error('Error deleting record:', error);
+        toast.error('Error deleting record.');
+      }
+    }
+  };
+
   const filteredRecords = records.filter(
     (record) =>
       record.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -41,8 +62,8 @@ export default function PatientUploadedRecords() {
       <Toaster position="top-right" reverseOrder={false} />
       <div className="min-h-screen bg-gradient-to-b from-[#073243] via-[#0a4c59] to-[#0d6270] flex items-center justify-center p-4">
         <div className="w-full bg-white/10 backdrop-blur-md border-none text-white rounded-lg shadow-lg p-6">
-        <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem] text-white text-center">
-      Your Medical Records
+          <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem] text-white text-center">
+            Your Medical Records
           </h1>
           <Link
             to="/patient/addrecords"
@@ -60,12 +81,20 @@ export default function PatientUploadedRecords() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             {filteredRecords.map((record) => (
               <div key={record._id} className="bg-white/10 border border-white/30 rounded p-4 flex flex-col">
-                <h4 
-                  className="text-xl font-semibold cursor-pointer" 
-                  onClick={() => toggleRecordPreview(record._id)}
-                >
-                  {record.title}
-                </h4>
+                <div className="flex justify-between items-center">
+                  <h4
+                    className="text-xl font-semibold cursor-pointer"
+                    onClick={() => toggleRecordPreview(record._id)}
+                  >
+                    {record.title}
+                  </h4>
+                  <button
+                    onClick={() => deleteRecord(record._id)}
+                    className="text-red-500 hover:text-red-600 transition duration-300 ease-in-out"
+                  >
+                    <Trash2 className="h-5 w-5" />
+                  </button>
+                </div>
                 <p className="text-white/80">{record.description}</p>
                 <Link
                   to={record.fileUrl}
