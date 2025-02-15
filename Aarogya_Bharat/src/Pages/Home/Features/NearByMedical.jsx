@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Input, List, Button, message, Spin } from "antd";
 import { MapPin, Navigation2, Search as SearchIcon } from "lucide-react";
 import { Map, Marker, Overlay } from "pigeon-maps";
+import Navbar from '../../../Components/Home/Navbar'
 
 const NearByMedical = () => {
   const [places, setPlaces] = useState([]);
@@ -113,7 +114,9 @@ const NearByMedical = () => {
   const paginatedPlaces = places.slice(0, currentPage * itemsPerPage);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <>
+    <Navbar />
+    <div className="min-h-screen bg-gradient-to-b from-[#073243] via-[#0a4c59] to-[#0d6270] p-6">
       <div className="max-w-7xl mx-auto">
         <div className="bg-white rounded-lg shadow-xl">
           <div className="p-6 border-b border-gray-200">
@@ -270,6 +273,7 @@ const NearByMedical = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
