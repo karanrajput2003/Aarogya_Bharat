@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Input, List, Button, message, Spin } from "antd";
 import { MapPin, Navigation2, Omega, Search as SearchIcon } from "lucide-react";
 import { Map, Marker, Overlay } from "pigeon-maps";
+import Navbar from "../../../Components/Home/Navbar";
 
 const NearByHospital = () => {
   const [hospitals, setHospitals] = useState([]);
