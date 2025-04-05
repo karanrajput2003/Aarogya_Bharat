@@ -1,4 +1,4 @@
-const socket = io("/");
+const socket = io("https://aarogya-bharat-video-call.onrender.com"); // Replace with your hosted server URL
 const videoGrid = document.getElementById("video-grid");
 const myVideo = document.createElement("video");
 const showChat = document.querySelector("#showChat");
@@ -22,9 +22,10 @@ showChat.addEventListener("click", () => {
 const user = prompt("Enter your name");
 
 var peer = new Peer({
-  host: '127.0.0.1',
-  port: 3030,
+  host: 'aarogya-bharat-video-call.onrender.com', // Replace with your hosted server URL
+  port: 443, // Use 443 for HTTPS
   path: '/peerjs',
+  secure: true, // Ensure secure connection
   config: {
     'iceServers': [
       { url: 'stun:stun01.sipphone.com' },
