@@ -124,12 +124,12 @@ muteButton.addEventListener("click", () => {
   const enabled = myVideoStream.getAudioTracks()[0].enabled;
   if (enabled) {
     myVideoStream.getAudioTracks()[0].enabled = false;
-    html = `<i class="fas fa-microphone-slash"></i>`;
+    html = `<i class="fa fa-microphone-slash"></i>`;
     muteButton.classList.toggle("background__red");
     muteButton.innerHTML = html;
   } else {
     myVideoStream.getAudioTracks()[0].enabled = true;
-    html = `<i class="fas fa-microphone"></i>`;
+    html = `<i class="fa fa-microphone"></i>`;
     muteButton.classList.toggle("background__red");
     muteButton.innerHTML = html;
   }
@@ -139,13 +139,15 @@ stopVideo.addEventListener("click", () => {
   const enabled = myVideoStream.getVideoTracks()[0].enabled;
   if (enabled) {
     myVideoStream.getVideoTracks()[0].enabled = false;
-    html = `<i class="fas fa-video-slash"></i>`;
+    html = `<i class="fa fa-camera"></i>`;
     stopVideo.classList.toggle("background__red");
+    stopVideo.style.backgroundColor = enabled ? "white" : "transparent";
     stopVideo.innerHTML = html;
   } else {
     myVideoStream.getVideoTracks()[0].enabled = true;
-    html = `<i class="fas fa-video"></i>`;
+    html = `<i class="fa fa-camera"></i>`;
     stopVideo.classList.toggle("background__red");
+    stopVideo.style.backgroundColor = !enabled ? "#f2f2f2" : "transparent";
     stopVideo.innerHTML = html;
   }
 });
@@ -161,7 +163,7 @@ socket.on("createMessage", (message, userName) => {
   messages.innerHTML =
     messages.innerHTML +
     `<div class="message">
-        <b><i class="far fa-user-circle"></i> <span> ${userName === user ? "me" : userName
+        <b><i class="fa fa-user-circle"></i> <span> ${userName === user ? "me" : userName
     }</span> </b>
         <span>${message}</span>
     </div>`;
