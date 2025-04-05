@@ -83,7 +83,7 @@ function Navbar() {
             to="/patient/myappointments"
             className="text-sm font-medium hover:underline underline-offset-4"
           >
-            My Appoiments
+            My Appointments
           </Link>
           <Link
             to={`/patient/documents`}
@@ -130,7 +130,7 @@ function Navbar() {
                   to="/patient/myappointments"
                   className="text-sm font-medium hover:underline"
                 >
-                  My Appoiments
+                  My Appointments
                 </Link>
               </li>
               <li>

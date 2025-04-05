@@ -51,6 +51,7 @@ export default function ProfessionalChatbot() {
       });
 
       const userResponseText = response.data.hello;
+      console.log(userResponseText);
       setMessages((prevMessages) => [...prevMessages, { type: "user", content: userResponseText }]);
       fetchNextQuestion(userResponseText);
     } catch (error) {
