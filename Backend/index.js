@@ -6,6 +6,8 @@ var bcrypt = require("bcryptjs");
 const moment = require("moment");
 const app = express();
 const nodemailer = require("nodemailer");
+const axios = require('axios'); // Make sure axios is imported
+
 
 const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
@@ -24,7 +26,8 @@ const MedicalRecord = db.record;
 const Doctor = db.doctor;
 const Slot = db.slots;
 const Consult = db.consult;
-
+const Medicine = db.medicine;
+const Prescription = db.prescription;
 // mongoose.connect("mongodb+srv://karan_admin:Kar2003@cluster0.oq0g1g1.mongodb.net/userDB", {useNewUrlParser: true});
 
 db.mongoose
@@ -377,14 +380,13 @@ app.patch('/api/doctors/verify/:id', async (req, res) => {
     res.status(500).json({ message: 'Error verifying doctor' });
   }
 });
-const axios = require('axios'); // Make sure axios is imported
 const MERCHANT_KEY = "96434309-7796-489d-8924-ab56988a6076";
 const MERCHANT_ID = "PGTESTPAYUAT86";
 const MERCHANT_BASE_URL = "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay";
 const MERCHANT_STATUS_URL = "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status";
-const redirectUrl = "http://localhost:8080/status";
-const successUrl = "http://localhost:5173/patient/myappointments";
-const failureUrl = "http://localhost:5173/payment-failure";
+const redirectUrl = "https://aarogya-bharat.vercel.app/status";
+const successUrl = "https://aarogya-bharat.vercel.app/patient/myappointments";
+const failureUrl = "https://aarogya-bharat.vercel.app/payment-failure";
 
 // Create Order Route
 app.post("/create-order", async (req, res) => {
@@ -773,7 +775,7 @@ We are pleased to inform you that your appointment has been approved by Doctor. 
 Doctor's Id: ${doctorId}
 Date & Time: ${date} at ${time}
 Mode of Consultation: Video Call
-Meeting Link: http://localhost:3030/kdkskdn1q121
+Meeting Link: https://aarogya-bharat-video-call.onrender.com/kdkskdn1q121
 
 Please click on the above link to join the consultation at the scheduled time. Ensure you have a stable internet connection and are ready with any relevant medical records or details for discussion.
 
@@ -833,4 +835,205 @@ app.get('/api/myappointments', async (req, res) => {
 
 app.listen(5000, () => {
     console.log('Server is running on port 5000');
+});
+
+
+// Get all medicines
+app.get("/medicine", async (req, res) => {
+  try {
+    const medicines = await Medicine.find().sort({ name: 1 })
+    res.json(medicines)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: "Server Error" })
+  }
+})
+
+// Get medicine by ID
+app.get("/medicine/:id", async (req, res) => {
+  try {
+    const medicine = await Medicine.findById(req.params.id)
+    if (!medicine) {
+      return res.status(404).json({ message: "Medicine not found" })
+    }
+    res.json(medicine)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: "Server Error" })
+  }
+})
+
+// Create new medicine
+app.post("/medicine", async (req, res) => {
+  try {
+    const { name, type, dosageUnit, description, defaultInstructions } = req.body
+
+    const newMedicine = new Medicine({
+      name,
+      type,
+      dosageUnit,
+      description,
+      defaultInstructions,
+    })
+
+    const medicine = await newMedicine.save()
+    res.status(201).json(medicine)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: "Server Error" })
+  }
+})
+
+// Update medicine
+app.put("/medicine/:id", async (req, res) => {
+  try {
+    const { name, type, dosageUnit, description, defaultInstructions } = req.body
+
+    const medicine = await Medicine.findById(req.params.id)
+    if (!medicine) {
+      return res.status(404).json({ message: "Medicine not found" })
+    }
+
+    medicine.name = name
+    medicine.type = type
+    medicine.dosageUnit = dosageUnit
+    medicine.description = description
+    medicine.defaultInstructions = defaultInstructions
+
+    await medicine.save()
+    res.json(medicine)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: "Server Error" })
+  }
+})
+
+// Delete medicine
+app.delete("/medicine/:id", async (req, res) => {
+  try {
+    const medicine = await Medicine.findById(req.params.id)
+    if (!medicine) {
+      return res.status(404).json({ message: "Medicine not found" })
+    }
+
+    // Change this line:
+    // await medicine.remove()
+    // To this:
+    await Medicine.deleteOne({ _id: req.params.id })
+
+    res.json({ message: "Medicine removed" })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: "Server Error" })
+  }
+})
+
+// Search medicines
+app.get("/medicines/suggest", async (req, res) => {
+  try {
+    const query = req.query.query
+
+    if (!query) {
+      return res.status(400).json({ message: "Query parameter is required" })
+    }
+
+    const medicines = await Medicine.find({
+      $or: [{ name: { $regex: query, $options: "i" } }, { description: { $regex: query, $options: "i" } }],
+    }).limit(10)
+
+    res.json(medicines)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: "Server Error" })
+  }
+})
+
+// Get all prescriptions
+app.get("/prescriptions", async (req, res) => {
+  try {
+    const prescriptions = await Prescription.find().populate("patientId", "name").sort({ createdAt: -1 })
+    res.json(prescriptions)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: "Server Error" })
+  }
+})
+
+// Get prescription by ID
+app.get("/prescriptions/:id", async (req, res) => {
+  try {
+    const prescription = await Prescription.findById(req.params.id).populate("patientId", "name email phone")
+
+    if (!prescription) {
+      return res.status(404).json({ message: "Prescription not found" })
+    }
+
+    res.json(prescription)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: "Server Error" })
+  }
+})
+
+// Create new prescription
+app.post("/prescriptions", async (req, res) => {
+  try {
+    const { patientId, appointmentId, medicines } = req.body;
+
+    const newPrescription = new Prescription({
+      patientId,
+      appointmentId,
+      medicines,
+    });
+
+    const prescription = await newPrescription.save();
+
+    // Fetch patient details for sending email
+    const patient = await User.findById(patientId);
+    if (!patient) {
+      return res.status(404).json({ message: "Patient not found" });
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: "hackathonbandra@gmail.com", // Your email address
+        pass: "ipgj baqa uxiq lpsq", // Use an App Password instead of plain password
+      },
+    });
+
+    // Mail options
+    const mailOptions = {
+      from: "hackathonbandra@gmail.com",
+      to: patient.email,
+      subject: "Your Prescription from Aarogya Bharat",
+      text: `Dear ${patient.username},
+
+Your prescription has been generated. Below are the details:
+
+Medicines:
+${medicines
+  .map(
+    (medicine, index) =>
+      `${index + 1}. ${medicine.name} - ${medicine.dosage} ${medicine.unit} (${medicine.instructions})`
+  )
+  .join("\n")}
+
+Please follow the instructions provided by your doctor. If you have any questions, feel free to contact us at hackathonbandra@gmail.com.
+
+Stay healthy,
+The Aarogya Bharat Team
+
+Note:
+This is an automated email. Please do not reply to this message directly.`,
+    };
+
+    // Send email
+    await transporter.sendMail(mailOptions);
+
+    res.status(201).json(prescription);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
+  }
 });

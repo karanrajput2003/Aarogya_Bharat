@@ -48,6 +48,7 @@ import AdminSetting from './Pages/Admin/AdminSetting.jsx';
 import PatientBookSlot from './Pages/Patient/PatientBookSlot.jsx';
 import DoctorAddSlots from './Pages/Doctor/DoctorAddSlots.jsx';
 import PatientAppointmentDetails from './Pages/Patient/PatientAppointmentDetails.jsx';
+import DoctorAddMedicinePage from './Pages/Doctor/DoctorAddMedicinePage.jsx';
 
 // Create the router
 const router = createBrowserRouter([
@@ -112,11 +113,15 @@ const router = createBrowserRouter([
     element: <DoctorAddSlots />,
   },
   {
+    path: '/doctor/addmedicines',
+    element: <DoctorAddMedicinePage />,
+  },
+  {
     path: 'doctor/appointmentdetails/:id',
     element: <DoctorAppointmentDetails />,
   },
   {
-    path: 'doctor/giveprescription/:patientId',
+    path: 'doctor/giveprescription/:patientId/:appointmentId',
     element: <DoctorGivePrescription />,
   },
   {

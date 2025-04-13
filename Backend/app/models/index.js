@@ -13,5 +13,7 @@ db.consult = require("./consultation.model");
 db.slots = require("./slots.model");
 db.order = require("./order.model");
 db.ROLES = ["user", "admin", "moderator"];
+db.medicine = require("./medicine.model");
+db.prescription = require("./prescription.model");
 
 module.exports = db;
