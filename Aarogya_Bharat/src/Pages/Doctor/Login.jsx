@@ -38,7 +38,7 @@ function Login() {
         position: "top-right"
       });
       setTimeout(() => {
-        navigate("/doctor");
+        navigate("/doctor/dashboard");
       }, 1000); // Delay navigation for user experience
     } catch (error) {
       console.error(error);

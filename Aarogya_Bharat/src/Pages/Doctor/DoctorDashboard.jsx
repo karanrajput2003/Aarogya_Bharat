@@ -195,7 +195,7 @@ export default function DoctorDashboard() {
                 value={`₹${doctorInfo.revenue.toLocaleString()}`}
                 trend="+10%"
                 trendUp={true}
-                bgColor="rose-200"
+                bgColor="red-200"
                 iconBgColor="bg-indigo-100"
               />
               <MetricCard
@@ -204,7 +204,7 @@ export default function DoctorDashboard() {
                 value={doctorInfo.rating}
                 subtext="out of 5"
                 progress={doctorInfo.rating * 20}
-                bgColor="amber-200"
+                bgColor="yellow-200"
                 iconBgColor="bg-indigo-100"
               />
             </div>
@@ -421,7 +421,7 @@ function MetricCard({
   iconBgColor
 }) {
   return (
-    <div className={`bg-${bgColor} rounded-xl p-6 shadow-sm`}>
+    <div className={`${bgColor} rounded-xl p-6 shadow-sm`}>
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-medium text-black">{label}</h3>
         <div className={`p-2 ${iconBgColor} rounded-full`}>{icon}</div>
