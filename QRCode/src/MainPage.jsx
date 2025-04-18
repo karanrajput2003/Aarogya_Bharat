@@ -5,6 +5,7 @@ import { useParams, Link } from "react-router-dom";
 
 export default function Component() {
   const { userId } = useParams();
+  const { uniqueId } = useParams();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,7 +16,7 @@ export default function Component() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch(`https://aarogya-bharat-qr-backend.vercel.app/api/users/${userId}`);
+        const response = await fetch(`https://aarogya-bharat-qr-backend.vercel.app/api/users/${userId}/${uniqueId}`);
         const data = await response.json();
         setUserData(data);
         setLoading(false);
@@ -24,20 +25,25 @@ export default function Component() {
         setLoading(false);
       }
     };
-
+  
     const fetchDocuments = async () => {
       try {
-        const response = await fetch(`https://aarogya-bharat-qr-backend.vercel.app/api/medicalRecords/${userId}`);
+        const response = await fetch(`https://aarogya-bharat-qr-backend.vercel.app/api/medicalRecords/${userId}/${uniqueId}`);
+        if (response.status === 403) {
+          setError('Access to medical records has expired');
+          return;
+        }
         const data = await response.json();
         setDocuments(data);
       } catch (error) {
         console.error('Error fetching documents:', error);
       }
     };
-
+  
     fetchUserData();
     fetchDocuments();
-  }, [userId]);
+  }, [userId, uniqueId]);
+  
 
   const filteredDocuments = documents.filter(doc =>
     doc.title.toLowerCase().includes(searchQuery.toLowerCase())

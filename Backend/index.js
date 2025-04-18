@@ -1015,7 +1015,7 @@ Medicines:
 ${medicines
   .map(
     (medicine, index) =>
-      `${index + 1}. ${medicine.name} - ${medicine.dosage} ${medicine.unit} (${medicine.instructions})`
+      `${index + 1}. ${medicine.name} - ${medicine.dosage} (${medicine.instructions}) ${medicine.duration}`
   )
   .join("\n")}
 
