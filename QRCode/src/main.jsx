@@ -11,7 +11,7 @@ const router = createBrowserRouter([
     element: <App />,
   },
   {
-    path: '/:userId',
+    path: '/:userId/:uniqueId',
     element: <MainPage />
   },
 ]);

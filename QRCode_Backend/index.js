@@ -72,10 +72,23 @@ app.get('/api/users/:userId', async (req, res) => {
   }
 });
 
-app.get('/api/medicalRecords/:userId', async (req, res) => {
-  const { userId } = req.params;
+app.get('/api/medicalRecords/:userId/:uniqueId', async (req, res) => {
+  const userId = req.params.userId;
+  const uniqueId = req.params.uniqueId;
 
   try {
+    // Simulate a time-limited access mechanism
+    const expirationTime = 5 * 60 * 1000; // 5 minutes in milliseconds
+    const requestTime = new Date().getTime();
+
+    // Assuming uniqueId contains a timestamp for validation
+    const [recordId, timestamp] = uniqueId.split('-');
+    const recordTime = parseInt(timestamp, 10);
+
+    if (requestTime - recordTime > expirationTime) {
+      return res.status(403).json({ message: 'Access to this record has expired' });
+    }
+
     const records = await MedicalRecord.find({ userId });
     res.status(200).json(records);
   } catch (error) {

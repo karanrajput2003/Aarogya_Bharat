@@ -4,6 +4,10 @@ import { QRCode } from "react-qr-code";
 import { Shield, Calendar, Mail, MapPin, Fingerprint } from "lucide-react";
 import Navbar from "../../Components/Patient/Navbar";
 
+function generateUniqueId() {
+  return Math.random().toString(36).substr(2, 9);
+}
+
 export default function Component() {
   const { patientId } = useParams();
   const [patientData, setPatientData] = useState(null);
@@ -30,7 +34,6 @@ export default function Component() {
 
     fetchPatientData();
   }, [patientId]);
-
 
   if (loading) {
     return <div className="text-gray-700">Loading...</div>;
@@ -94,7 +97,9 @@ export default function Component() {
                   <InfoItem
                     icon={<Calendar className="h-5 w-5 text-blue-500" />}
                     label="Age"
-                    value={patientData?.age ? `${patientData.age} Years` : "N/A"}
+                    value={
+                      patientData?.age ? `${patientData.age} Years` : "N/A"
+                    }
                   />
                   <InfoItem
                     icon={<Mail className="h-5 w-5 text-blue-500" />}
@@ -116,10 +121,11 @@ export default function Component() {
                 </div>
               </div>
 
-              {/* QR Code Section */}
               <div className="flex flex-col items-center justify-center p-6 bg-gradient-to-b from-gray-100 to-gray-200 rounded-lg border border-gray-300">
                 <div className="text-center mb-4">
-                  <div className="text-sm text-gray-700">Scan for Documents</div>
+                  <div className="text-sm text-gray-700">
+                    Scan for Documents
+                  </div>
                   <div className="text-xs text-gray-500 mt-1">
                     Official Medical Card
                   </div>
@@ -127,7 +133,7 @@ export default function Component() {
 
                 <div className="bg-white p-4 rounded-lg shadow-md relative">
                   <QRCode
-                    value={`https://aarogya-bharat-qr.vercel.app/${patientId}`}
+                    value={`https://aarogya-bharat-qr.vercel.app/${patientId}/${generateUniqueId()}`}
                     size={180}
                     className="relative z-10"
                   />
