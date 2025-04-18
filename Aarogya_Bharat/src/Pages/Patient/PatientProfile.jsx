@@ -4,6 +4,9 @@ import { QRCode } from "react-qr-code";
 import { Shield, Calendar, Mail, MapPin, Fingerprint } from "lucide-react";
 import Navbar from "../../Components/Patient/Navbar";
 
+function generateUniqueId() {
+  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
 export default function Component() {
   const { patientId } = useParams();
   const [patientData, setPatientData] = useState(null);
