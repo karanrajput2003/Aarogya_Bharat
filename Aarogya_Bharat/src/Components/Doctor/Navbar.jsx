@@ -146,7 +146,7 @@ function Navbar() {
             </svg>
           </Link> */}
           <Link
-            to="/doctor/transaction"
+            to="/doctor/getpayment"
             className="p-2 rounded-lg text-slate-400 hover:bg-white hover:bg-opacity-10"
             title="Transactions"
           >

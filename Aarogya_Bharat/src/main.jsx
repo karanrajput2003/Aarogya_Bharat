@@ -49,6 +49,7 @@ import PatientBookSlot from './Pages/Patient/PatientBookSlot.jsx';
 import DoctorAddSlots from './Pages/Doctor/DoctorAddSlots.jsx';
 import PatientAppointmentDetails from './Pages/Patient/PatientAppointmentDetails.jsx';
 import DoctorAddMedicinePage from './Pages/Doctor/DoctorAddMedicinePage.jsx';
+import DoctorPayment from './Pages/Doctor/DoctorPayment.jsx';
 
 // Create the router
 const router = createBrowserRouter([
@@ -115,6 +116,10 @@ const router = createBrowserRouter([
   {
     path: '/doctor/addmedicines',
     element: <DoctorAddMedicinePage />,
+  },
+  {
+    path: '/doctor/getpayment',
+    element: <DoctorPayment />,
   },
   {
     path: 'doctor/appointmentdetails/:id',
