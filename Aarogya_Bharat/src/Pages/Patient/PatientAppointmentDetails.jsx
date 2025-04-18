@@ -8,6 +8,7 @@ import Navbar from "../../Components/Patient/Navbar"
 const PatientAppointmentDetails = () => {
   const { id } = useParams()
   const [consultationData, setConsultationData] = useState(null)
+  const [prescription, setPrescription] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -20,6 +21,7 @@ const PatientAppointmentDetails = () => {
         }
         const data = await response.json()
         setConsultationData(data)
+        console.log(consultationData.patient.userId)
       } catch (error) {
         setError(error.message)
       } finally {
@@ -27,16 +29,37 @@ const PatientAppointmentDetails = () => {
       }
     }
 
+
     fetchAppointmentDetails()
   }, [id])
+
+  const fetchPrescription = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND}/getprescriptions/${consultationData.patient.userId}/${id}`)
+      if (!response.ok) {
+        throw new Error("Error fetching appointment details.")
+      }
+      const data = await response.json()
+      setPrescription(data)
+      console.log(data)
+    } catch (error) {
+      setError(error.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchPrescription();
+  },[consultationData]);
 
   if (loading) {
     return <LoadingSpinner />
   }
 
-  if (error) {
-    return <ErrorMessage message={error} />
-  }
+  // if (error) {
+  //   return <ErrorMessage message={error} />
+  // }
 
   if (!consultationData) {
     return null
@@ -121,8 +144,16 @@ const PatientAppointmentDetails = () => {
                 <Section title="Prescription and Status">
                   <InfoItem
                     icon={<FileText className="text-purple-500" />}
-                    label="Prescription"
-                    value={consultationData.additionalNotes || "None"}
+                    label="Prescription Notes"
+                    value={prescription && (
+                        <ul className="list-disc list-inside space-y-2">
+                          {prescription[0].medicines.map((medicine, index) => (
+                            <li key={index} className="text-sm text-gray-900">
+                              <strong>{medicine.name}</strong>: {medicine.dosage}, {medicine.instructions}, Duration: {medicine.duration} days
+                            </li>
+                          ))}
+                        </ul>
+                    ) || "None"}
                   />
                   <InfoItem
                     icon={<Activity className="text-purple-500" />}

@@ -114,7 +114,11 @@ function AppointmentCard({ appointment, handleViewDetails }) {
       <div className="p-6">
         <div className="flex items-center mb-4">
           <User className="text-[#189AB4] mr-2" size={20} />
-          <h3 className="text-lg font-semibold text-[#05445E]">Dr. {appointment.consultationDetails.doctorid}</h3>
+          <h3 className="text-lg font-semibold text-[#05445E]">
+            {appointment.consultationDetails.doctorid === "6737533059a5ef98b0a15846"
+              ? "Dr. Rajesh Sharma"
+              : "Dr. Arjun Desai"}
+          </h3>
         </div>
         <p className="text-[#189AB4] mb-3">{appointment.specialization}</p>
         <div className="flex items-center mb-2">

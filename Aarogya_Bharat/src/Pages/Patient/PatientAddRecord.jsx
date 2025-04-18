@@ -6,7 +6,7 @@ import { AlertCircle, FileUp, X } from "lucide-react"
 import Navbar from "../../Components/Patient/Navbar"
 import { toast, Toaster } from "react-hot-toast"
 import { useSelector } from "react-redux"
-import { pinata } from "./pinata" // Import Pinata
+import axios from "axios" // Added axios for API calls
 
 export default function PatientAddRecord() {
   const userId = useSelector((state) => state.auth.userId)
@@ -18,9 +18,13 @@ export default function PatientAddRecord() {
   } = useForm()
   const [file, setFile] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState(0)
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0])
+    const selectedFile = e.target.files[0]
+    if (selectedFile) {
+      setFile(selectedFile)
+    }
   }
 
   const removeFile = () => {
@@ -32,18 +36,75 @@ export default function PatientAddRecord() {
     }
   }
 
+  // Function to upload file to Pinata
+  const uploadToPinata = async (file) => {
+    try {
+      // Create form data for file upload
+      const formData = new FormData()
+      formData.append("file", file)
+      
+      // Optional metadata
+      const metadata = JSON.stringify({
+        name: file.name,
+        keyvalues: {
+          uploadedBy: userId,
+          uploadDate: new Date().toISOString()
+        }
+      })
+      formData.append("pinataMetadata", metadata)
+      
+      // Optional pinning options
+      const pinataOptions = JSON.stringify({
+        cidVersion: 1
+      })
+      formData.append("pinataOptions", pinataOptions)
+      
+      // Replace with your Pinata API keys
+      const PINATA_JWT = import.meta.env.VITE_PINATA_JWT
+      
+      // Make request to Pinata API
+      const res = await axios.post(
+        "https://api.pinata.cloud/pinning/pinFileToIPFS",
+        formData,
+        {
+          headers: {
+            "Authorization": `Bearer ${PINATA_JWT}`,
+            "Content-Type": "multipart/form-data"
+          },
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            )
+            setUploadProgress(percentCompleted)
+          }
+        }
+      )
+      
+      return res.data
+    } catch (error) {
+      console.error("Error uploading to Pinata:", error)
+      throw new Error("Failed to upload to IPFS via Pinata")
+    }
+  }
+
   const onSubmit = async (data) => {
     setIsSubmitting(true)
+    setUploadProgress(0)
 
     try {
       let fileUrl = ""
       if (file) {
-        const upload = await pinata.upload.file(file)
-        console.log(upload)
-        fileUrl = await pinata.gateways.convert(upload.IpfsHash)
-        console.log(fileUrl)
+        // Upload file to Pinata
+        const pinataResponse = await uploadToPinata(file)
+        const ipfsHash = pinataResponse.IpfsHash
+        
+        // Convert IPFS hash to gateway URL
+        fileUrl = `https://gateway.pinata.cloud/ipfs/${ipfsHash}`
+        // Or use your dedicated gateway if you have one
+        // fileUrl = `https://harlequin-leading-chameleon-471.mypinata.cloud/ipfs/${ipfsHash}`
       }
 
+      // Send data to your backend
       const response = await fetch(`${import.meta.env.VITE_BACKEND}/api/uploadfile`, {
         method: "POST",
         headers: {
@@ -62,11 +123,12 @@ export default function PatientAddRecord() {
         toast.success("Document saved successfully!")
         reset() // Reset form fields
         setFile(null) // Reset file state
+        setUploadProgress(0)
       } else {
         throw new Error(result.message || "Failed to save document")
       }
     } catch (error) {
-      toast.error("Error uploading file.")
+      toast.error(error.message || "Error uploading file.")
       console.error("Error uploading file:", error)
     } finally {
       setIsSubmitting(false)
@@ -103,7 +165,12 @@ export default function PatientAddRecord() {
                 Upload Document
               </label>
               <div className="flex items-center gap-2">
-                <input id="file" type="file" onChange={handleFileChange} className="hidden" />
+                <input 
+                  id="file" 
+                  type="file" 
+                  onChange={handleFileChange} 
+                  className="hidden" 
+                />
                 <button
                   type="button"
                   className="w-full bg-white/20 border border-white/30 text-white hover:bg-white/30 flex items-center justify-center rounded-lg p-3 transition duration-300 ease-in-out"
@@ -122,6 +189,19 @@ export default function PatientAddRecord() {
                   </button>
                 )}
               </div>
+              {uploadProgress > 0 && isSubmitting && (
+                <div className="mt-2">
+                  <div className="bg-white/10 rounded-full h-2 overflow-hidden">
+                    <div 
+                      className="bg-teal-500 h-full transition-all duration-300 ease-out"
+                      style={{ width: `${uploadProgress}%` }}
+                    ></div>
+                  </div>
+                  <p className="text-xs text-white/70 mt-1 text-right">
+                    {uploadProgress}% uploaded
+                  </p>
+                </div>
+              )}
             </div>
             <button
               type="submit"

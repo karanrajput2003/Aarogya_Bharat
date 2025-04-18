@@ -294,7 +294,7 @@ const DoctorAppointmentDetails = () => {
                     icon={<Laptop className="h-5 w-5 text-indigo-500" />} 
                     label="Meet Link" 
                     value={
-                      <a href={consultationData.consultationDetails.meetLink || "https://aarogya-bharat-video-call.onrender.com/kdkskdn1q121"} 
+                      <a href={consultationData.consultationDetails.meetLink || "https://aarogya-bharat-video-call.onrender.com/5ca0ba03-23a5-436f-bbac-5ed1be3a4b07"} 
                          className="text-indigo-600 hover:underline" 
                          target="_blank" 
                          rel="noopener noreferrer">

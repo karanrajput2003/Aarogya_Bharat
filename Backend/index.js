@@ -384,7 +384,7 @@ const MERCHANT_KEY = "96434309-7796-489d-8924-ab56988a6076";
 const MERCHANT_ID = "PGTESTPAYUAT86";
 const MERCHANT_BASE_URL = "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay";
 const MERCHANT_STATUS_URL = "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status";
-const redirectUrl = "https://aarogya-bharat.vercel.app/status";
+const redirectUrl = "https://aarogya-bharat.vercel.app/patient/myappointments";
 const successUrl = "https://aarogya-bharat.vercel.app/patient/myappointments";
 const failureUrl = "https://aarogya-bharat.vercel.app/payment-failure";
 
@@ -775,7 +775,7 @@ We are pleased to inform you that your appointment has been approved by Doctor. 
 Doctor's Id: ${doctorId}
 Date & Time: ${date} at ${time}
 Mode of Consultation: Video Call
-Meeting Link: https://aarogya-bharat-video-call.onrender.com/kdkskdn1q121
+Meeting Link: https://aarogya-bharat-video-call.onrender.com/5ca0ba03-23a5-436f-bbac-5ed1be3a4b07
 
 Please click on the above link to join the consultation at the scheduled time. Ensure you have a stable internet connection and are ready with any relevant medical records or details for discussion.
 
@@ -974,6 +974,26 @@ app.get("/prescriptions/:id", async (req, res) => {
     res.status(500).json({ message: "Server Error" })
   }
 })
+
+app.get("/getprescriptions/:patientId/:appointmentId", async (req, res) => {
+  try {
+    const { patientId } = req.params;
+    const { appointmentId } = req.params;
+
+    // Find prescriptions by patientId
+    const prescriptions = await Prescription.find({ patientId,appointmentId })
+
+    if (!prescriptions || prescriptions.length === 0) {
+      return res.status(404).json({ message: "No prescriptions found for this patient" });
+    }
+
+    res.json(prescriptions);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
 
 // Create new prescription
 app.post("/prescriptions", async (req, res) => {
