@@ -75,25 +75,25 @@ const STATUS_COLORS = {
 
 const todayAppointments = [
   {
-    name: "Matt Smith",
+    name: "Sammer",
     time: "11:30 AM",
     type: "Emergency",
     completed: true,
   },
   {
-    name: "Angelika Kravets",
+    name: "Raju",
     time: "1:30 PM",
     type: "Video consultation",
     completed: true,
   },
   {
-    name: "Emily Blunt",
+    name: "Rajesh",
     time: "4:00 PM",
     type: "Check-up",
     completed: false,
   },
   {
-    name: "John Krasinski",
+    name: "Pradeep",
     time: "5:30 PM",
     type: "Consultation",
     completed: false,
@@ -101,7 +101,7 @@ const todayAppointments = [
 ];
 
 // Calendar data
-const calendarDays = [5, 6, 7, 8, 9, 10, 11];
+const calendarDays = [14, 15, 16, 17, 18, 19, 20];
 const weekDays = ["MO", "TU", "WE", "TH", "FR", "ST", "SN"];
 const currentMonth = "December 2022";
 
@@ -138,7 +138,7 @@ export default function DoctorDashboard() {
               </div>
               <div className="relative">
                 <button className="flex items-center">
-                  <span className="font-medium text-slate-800">Dr Luke</span>
+                  <span className="font-medium text-slate-800">Dr Rajesh</span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -160,7 +160,7 @@ export default function DoctorDashboard() {
         {/* Welcome */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold mb-1 text-slate-800">
-            Good morning, Dr Luke
+            Good morning, Dr Rajesh
           </h1>
           <p className="text-slate-500">Have a great and productive day</p>
         </div>

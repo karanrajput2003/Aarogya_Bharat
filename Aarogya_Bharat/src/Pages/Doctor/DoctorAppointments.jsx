@@ -165,7 +165,7 @@
                 </div>
                 <div className="relative">
                   <button className="flex items-center">
-                    <span className="font-medium text-slate-800">Dr Luke</span>
+                    <span className="font-medium text-slate-800">Dr Rajesh</span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
