@@ -103,7 +103,7 @@ const todayAppointments = [
 // Calendar data
 const calendarDays = [14, 15, 16, 17, 18, 19, 20];
 const weekDays = ["MO", "TU", "WE", "TH", "FR", "ST", "SN"];
-const currentMonth = "December 2022";
+const currentMonth = "April 2025";
 
 export default function DoctorDashboard() {
   const [selectedTab, setSelectedTab] = useState("All");
