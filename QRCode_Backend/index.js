@@ -85,9 +85,9 @@ app.get('/api/medicalRecords/:userId/:uniqueId', async (req, res) => {
     const [recordId, timestamp] = uniqueId.split('-');
     const recordTime = parseInt(timestamp, 10);
 
-    if (requestTime - recordTime > expirationTime) {
-      return res.status(403).json({ message: 'Access to this record has expired' });
-    }
+    // if (requestTime - recordTime > expirationTime) {
+    //   return res.status(403).json({ message: 'Access to this record has expired' });
+    // }
 
     const records = await MedicalRecord.find({ userId });
     res.status(200).json(records);
